@@ -5,7 +5,7 @@ class App extends Component {
     return (
       <div>
         <h1>
-          Re-vents
+          Re-vents!
         </h1>
       </div>
     );
