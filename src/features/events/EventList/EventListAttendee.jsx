@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Image, List } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { Image, List } from '../../../frameworks/semantic-ui-react';
 
 class EventListAttendee extends Component {
   render() {

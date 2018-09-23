@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Menu, Container, Button } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Menu,
+} from '../../../frameworks/semantic-ui-react';
 
 class NavBar extends Component {
   render() {

@@ -1,5 +1,9 @@
-import React, { Component } from 'react'
-import { Button, Form, Segment } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import {
+  Button,
+  Form,
+  Segment,
+} from '../../../frameworks/semantic-ui-react';
 
 const emptyEvent = {
   city: '',
@@ -80,50 +84,60 @@ class EventForm extends Component {
       <Segment>
         <Form onSubmit={this.onFormSubmit}>
           <Form.Field>
-            <label>Event Title</label>
-            <input
-              name="title"
-              onChange={this.onInputChange}
-              placeholder="Event Title"
-              value={title}
-            />
+            <label htmlFor="title">
+              <input
+                name="title"
+                onChange={this.onInputChange}
+                placeholder="Event Title"
+                value={title}
+              />
+              Event Title
+            </label>
           </Form.Field>
           <Form.Field>
-            <label>Event Date</label>
-            <input
-              name="date"
-              onChange={this.onInputChange}
-              type="date"
-              value={date}
-              placeholder="Event Date"
-            />
+            <label htmlFor="date">
+              <input
+                name="date"
+                onChange={this.onInputChange}
+                type="date"
+                value={date}
+                placeholder="Event Date"
+              />
+              Event Date
+            </label>
           </Form.Field>
           <Form.Field>
-            <label>City</label>
-            <input
-              name="city"
-              onChange={this.onInputChange}
-              value={city}
-              placeholder="City event is taking place"
-            />
+            <label htmlFor="city">
+              <input
+                name="city"
+                onChange={this.onInputChange}
+                value={city}
+                placeholder="City event is taking place"
+              />
+              City
+            </label>
           </Form.Field>
           <Form.Field>
-            <label>Venue</label>
-            <input
-              name="venue"
-              onChange={this.onInputChange}
-              value={venue}
-              placeholder="Enter the Venue of the event"
-            />
+            <label htmlFor="venue">
+              <input
+                name="venue"
+                onChange={this.onInputChange}
+                value={venue}
+                placeholder="Enter the Venue of the event"
+              />
+              Venue
+            </label>
           </Form.Field>
           <Form.Field>
-            <label>Hosted By</label>
-            <input
-              name="hostedBy"
-              onChange={this.onInputChange}
-              value={hostedBy}
-              placeholder="Enter the name of person hosting"
-            />
+            <label htmlFor="hostedBy">
+              <input
+                name="hostedBy"
+                onChange={this.onInputChange}
+                value={hostedBy}
+                placeholder="Enter the name of person hosting"
+              />
+              Hosted By
+            </label>
           </Form.Field>
           <Button positive type="submit">
             Submit
@@ -131,8 +145,8 @@ class EventForm extends Component {
           <Button onClick={handleCancel} type="button">Cancel</Button>
         </Form>
       </Segment>
-    )
+    );
   }
-};
+}
 
 export default EventForm;
