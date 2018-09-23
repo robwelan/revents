@@ -10,15 +10,10 @@ import EventListAttendee from './EventListAttendee';
 
 class EventListItem extends Component {
   render() {
-    const { event: {
-      attendees,
-      date,
-      description,
-      hostedBy,
-      hostPhotoURL,
-      title,
-      venue,
-    },
+    const {
+      deleteEvent,
+      event,
+      onEventOpen,
     } = this.props;
 
     return (
@@ -29,12 +24,12 @@ class EventListItem extends Component {
               <Item.Image
                 circular
                 size="tiny"
-                src={hostPhotoURL}
+                src={event.hostPhotoURL}
               />
               <Item.Content>
-                <Item.Header as="a">{title}</Item.Header>
+                <Item.Header as="a">{event.title}</Item.Header>
                 <Item.Description>
-                  Hosted by <a>{hostedBy}</a>
+                  Hosted by <a>{event.hostedBy}</a>
                 </Item.Description>
               </Item.Content>
             </Item>
@@ -42,14 +37,14 @@ class EventListItem extends Component {
         </Segment>
         <Segment>
           <span>
-            <Icon name="clock" /> {date}
+            <Icon name="clock" /> {event.date}
             {' | '}
-            <Icon name="marker" /> {venue}
+            <Icon name="marker" /> {event.venue}
           </span>
         </Segment>
         <Segment secondary>
           <List horizontal>
-            {attendees && attendees.map((attendee) => (
+            {event.attendees && event.attendees.map((attendee) => (
               <EventListAttendee
                 attendee={attendee}
                 key={attendee.id}
@@ -58,8 +53,21 @@ class EventListItem extends Component {
           </List>
         </Segment>
         <Segment clearing>
-          <span>{description}</span>
-          <Button as="a" color="teal" floated="right" content="View" />
+          <span>{event.description}</span>
+          <Button
+            as="a"
+            color="red"
+            content="Delete"
+            floated="right"
+            onClick={deleteEvent(event.id)}
+          />
+          <Button
+            as="a"
+            color="teal"
+            content="View"
+            floated="right"
+            onClick={onEventOpen(event)}
+          />
         </Segment>
       </Segment.Group>
     )

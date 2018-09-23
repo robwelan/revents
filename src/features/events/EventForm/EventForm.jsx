@@ -1,30 +1,56 @@
 import React, { Component } from 'react'
 import { Button, Form, Segment } from 'semantic-ui-react';
 
+const emptyEvent = {
+  city: '',
+  date: '',
+  hostedBy: '',
+  title: '',
+  venue: '',
+};
+
 class EventForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      event: {
-        city: '',
-        date: '',
-        hostedBy: '',
-        title: '',
-        venue: '',
-      },
+      event: emptyEvent,
     };
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
   }
 
+  componentDidMount() {
+    const { selectedEvent } = this.props;
+
+    if (selectedEvent !== null) {
+      this.setState({
+        event: selectedEvent,
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { selectedEvent } = this.props;
+
+    if (nextProps.selectedEvent !== selectedEvent) {
+      this.setState({
+        event: nextProps.selectedEvent || emptyEvent,
+      });
+    }
+  }
+
   onFormSubmit(e) {
     e.preventDefault();
-    const { createEvent } = this.props;
+    const { createEvent, updateEvent } = this.props;
     const { event } = this.state;
 
-    createEvent(event);
+    if (event.id) {
+      updateEvent(event);
+    } else {
+      createEvent(event);
+    }
   }
 
   onInputChange(e) {
