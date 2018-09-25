@@ -59,6 +59,11 @@ class NavBar extends Component {
             name="Events"
             to="/events"
           />
+          <Menu.Item
+            as={NavLink}
+            name="Test"
+            to="/test"
+          />
           {authenticated
             && (
               <React.Fragment>
