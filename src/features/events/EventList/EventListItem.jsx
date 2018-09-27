@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Button,
   Icon,
@@ -13,7 +14,6 @@ class EventListItem extends Component {
     const {
       deleteEvent,
       event,
-      onEventOpen,
     } = this.props;
 
     return (
@@ -62,15 +62,15 @@ class EventListItem extends Component {
             onClick={deleteEvent(event.id)}
           />
           <Button
-            as="a"
+            as={Link}
             color="teal"
             content="View"
             floated="right"
-            onClick={onEventOpen(event)}
+            to={`/event/${event.id}`}
           />
         </Segment>
       </Segment.Group>
-    )
+    );
   }
 };
 
