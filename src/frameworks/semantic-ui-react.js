@@ -11,9 +11,9 @@ import Menu from 'semantic-ui-react/dist/commonjs//collections/Menu';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button';
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header';
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
-import List from 'semantic-ui-react/dist/commonjs/elements/List'
+import List from 'semantic-ui-react/dist/commonjs/elements/List';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 
 // Grid
@@ -25,7 +25,8 @@ import GridRow from 'semantic-ui-react/dist/commonjs/collections/Grid/GridRow';
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown';
 
 // Views
-import Item from 'semantic-ui-react/dist/commonjs/views/Item'
+import Comment from 'semantic-ui-react/dist/commonjs/views/Comment';
+import Item from 'semantic-ui-react/dist/commonjs/views/Item';
 
 /*
   semantic-ui-react/dist/commonjs
@@ -36,6 +37,7 @@ import Item from 'semantic-ui-react/dist/commonjs/views/Item'
 
 export {
   Button,
+  Comment,
   Container,
   Dropdown,
   Form,
