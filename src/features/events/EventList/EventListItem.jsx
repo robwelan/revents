@@ -6,7 +6,7 @@ import {
   Item,
   List,
   Segment,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 import EventListAttendee from './EventListAttendee';
 
 class EventListItem extends Component {

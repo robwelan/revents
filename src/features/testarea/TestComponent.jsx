@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { incrementCounter, decrementCounter } from './testActions';
-import { Button } from '../../frameworks/semantic-ui-react';
+import { Button } from '../../frameworks/semantic-ui-react/scripts';
 
 const mapState = state => ({
   data: state.test.data,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Label } from '../../../frameworks/semantic-ui-react';
+import { Form, Label } from '../../../frameworks/semantic-ui-react/scripts';
 
 const TextInput = (props) => {
   const {

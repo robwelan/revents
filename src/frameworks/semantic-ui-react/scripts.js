@@ -2,7 +2,7 @@
   semantic-ui-react/dist/commonjs
 */
 // Addons
-import Select from 'semantic-ui-react/dist/commonjs/addons/Select'
+import Select from 'semantic-ui-react/dist/commonjs/addons/Select';
 
 // Collections
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form';

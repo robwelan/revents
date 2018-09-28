@@ -5,7 +5,7 @@ import {
   Form,
   Header,
   Segment,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const EventDetailedChat = () => {
   return (
@@ -46,7 +46,7 @@ const EventDetailedChat = () => {
               <Comment.Text>
                 <p>
                   This has been very useful for my research. Thanks as well!
-                    </p>
+                </p>
               </Comment.Text>
               <Comment.Actions>
                 <Comment.Action>Reply</Comment.Action>

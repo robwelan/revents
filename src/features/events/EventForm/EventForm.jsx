@@ -15,7 +15,7 @@ import {
   Header,
   Form,
   Segment,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 import { createEvent, updateEvent } from '../eventActions';
 import DateInput from '../../../app/common/form/DateInput';
 import SelectInput from '../../../app/common/form/SelectInput';
@@ -77,8 +77,12 @@ class EventForm extends Component {
   }
 
   onFormSubmit(values) {
-    const { doCreateEvent, doUpdateEvent, history } = this.props;
-    const { initialValues } = this.props;
+    const {
+      doCreateEvent,
+      doUpdateEvent,
+      history,
+      initialValues,
+    } = this.props;
 
     const newValues = {
       ...values,

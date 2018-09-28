@@ -3,7 +3,7 @@ import {
   Form,
   Label,
   Select,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const SelectInput = (props) => {
   const {

@@ -6,7 +6,7 @@ import {
   Image,
   Item,
   Segment,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const eventImageStyle = {
   filter: 'brightness(30%)',

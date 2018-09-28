@@ -3,7 +3,7 @@ import {
   Item,
   Label,
   Segment,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const EventDetailedSidebar = (props) => {
   const { attendees } = props;

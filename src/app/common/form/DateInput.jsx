@@ -1,7 +1,7 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import { Form, Label } from '../../../frameworks/semantic-ui-react';
+import { Form, Label } from '../../../frameworks/semantic-ui-react/scripts';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const DateInput = (props) => {

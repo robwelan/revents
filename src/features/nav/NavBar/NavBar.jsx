@@ -7,7 +7,7 @@ import {
   Button,
   Container,
   Menu,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 class NavBar extends Component {
   constructor(props) {

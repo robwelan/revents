@@ -4,7 +4,7 @@ import {
   Grid,
   Icon,
   Segment,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const EventDetailedInfo = (props) => {
   const { event } = props;

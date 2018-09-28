@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid, Header, Menu } from '../../../frameworks/semantic-ui-react';
 import { NavLink } from 'react-router-dom';
+import { Grid, Header, Menu } from '../../../frameworks/semantic-ui-react/scripts';
 
 const SettingsNav = () => {
   return (

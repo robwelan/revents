@@ -5,7 +5,7 @@ import {
   Image,
   Dropdown,
   Menu,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const SignedInMenu = (props) => {
   const { signOut } = props;

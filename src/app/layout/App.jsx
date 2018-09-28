@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Container } from '../../frameworks/semantic-ui-react';
+import { Container } from '../../frameworks/semantic-ui-react/scripts';
 import EventDashboard from '../../features/events/EventDashboard/EventDashboard';
 import EventDetailedPage from '../../features/events/EventDetailed/EventDetailedPage';
 import EventForm from '../../features/events/EventForm/EventForm';

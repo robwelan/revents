@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Button,
   Menu,
-} from '../../../frameworks/semantic-ui-react';
+} from '../../../frameworks/semantic-ui-react/scripts';
 
 const SignedOutMenu = (props) => {
   const { signIn } = props;
@@ -22,7 +22,7 @@ const SignedOutMenu = (props) => {
         style={{ marginLeft: '0.5em' }}
       />
     </Menu.Item>
-  )
+  );
 };
 
 export default SignedOutMenu;
