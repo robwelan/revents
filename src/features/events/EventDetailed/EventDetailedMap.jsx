@@ -9,6 +9,7 @@ const EventDetailedMap = (props) => {
   const { lat, lng } = props;
   const center = [lat, lng];
   const zoom = 14;
+  const key = { key: process.env.REACT_APP_GOOGLE_MAPS_API };
 
   return (
     <Segment
@@ -19,7 +20,7 @@ const EventDetailedMap = (props) => {
         style={{ height: '300px', width: '100%' }}
       >
         <GoogleMapReact
-          bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API }}
+          bootstrapURLKeys={key}
           defaultCenter={center}
           defaultZoom={zoom}
         >
