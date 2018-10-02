@@ -1,3 +1,4 @@
+/* global google */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
@@ -7,6 +8,8 @@ import {
   hasLengthGreaterThan,
   isRequired,
 } from 'revalidate';
+import Script from 'react-load-script';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import cuid from 'cuid';
 import moment from 'moment';
 import {
@@ -18,6 +21,7 @@ import {
 } from '../../../frameworks/semantic-ui-react/scripts';
 import { createEvent, updateEvent } from '../eventActions';
 import DateInput from '../../../app/common/form/DateInput';
+import PlaceInput from '../../../app/common/form/PlaceInput';
 import SelectInput from '../../../app/common/form/SelectInput';
 import TextArea from '../../../app/common/form/TextArea';
 import TextInput from '../../../app/common/form/TextInput';
@@ -66,14 +70,21 @@ class EventForm extends Component {
   constructor(props) {
     super(props);
 
-    // const { event } = this.props;
+    this.state = {
+      //  event: Object.assign({}, event),
+      cityLatLng: {},
+      scriptLoaded: false,
+      venueLatLng: {},
+    };
 
-    // this.state = {
-    //   event: Object.assign({}, event),
-    // };
-
+    this.handleCitySelect = this.handleCitySelect.bind(this);
+    this.handleScriptLoaded = this.handleScriptLoaded.bind(this);
+    this.handleVenueSelect = this.handleVenueSelect.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
-    // this.onInputChange = this.onInputChange.bind(this);
+  }
+
+  handleScriptLoaded() {
+    this.setState({ scriptLoaded: true });
   }
 
   onFormSubmit(values) {
@@ -83,10 +94,12 @@ class EventForm extends Component {
       history,
       initialValues,
     } = this.props;
+    const { venueLatLng } = this.state;
 
     const newValues = {
       ...values,
       date: moment(values.date).format(),
+      venueLatLng,
     };
 
     if (initialValues.id) {
@@ -103,6 +116,28 @@ class EventForm extends Component {
       doCreateEvent(newEvent);
       history.push('/events');
     }
+  }
+
+  handleCitySelect(selectedCity) {
+    geocodeByAddress(selectedCity)
+      .then(results => getLatLng(results[0]))
+      .then(latlng => this.setState({ cityLatLng: latlng }))
+      .then(() => {
+        const { change } = this.props;
+
+        change('city', selectedCity);
+      });
+  }
+
+  handleVenueSelect(selectedVenue) {
+    geocodeByAddress(selectedVenue)
+      .then(results => getLatLng(results[0]))
+      .then(latlng => this.setState({ venueLatLng: latlng }))
+      .then(() => {
+        const { change } = this.props;
+
+        change('venue', selectedVenue);
+      });
   }
 
   // onInputChange(e) {
@@ -124,9 +159,14 @@ class EventForm extends Component {
       pristine,
       submitting,
     } = this.props;
+    const { cityLatLng, scriptLoaded } = this.state;
 
     return (
       <Grid>
+        <Script
+          url={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API}&libraries=places`}
+          onLoad={this.handleScriptLoaded}
+        />
         <Grid.Column width={10}>
           <Segment>
             <Header
@@ -159,18 +199,32 @@ class EventForm extends Component {
                 content="Event Location Details"
                 sub
               />
-              <Field
-                component={TextInput}
-                name="city"
-                placeholder="Event city"
-                type="text"
-              />
-              <Field
-                component={TextInput}
-                name="venue"
-                placeholder="Event venue"
-                type="text"
-              />
+              {scriptLoaded
+                && (
+                  <React.Fragment>
+                    <Field
+                      component={PlaceInput}
+                      name="city"
+                      onSelect={this.handleCitySelect}
+                      options={{ types: ['(cities)'] }}
+                      placeholder="Event city"
+                      type="text"
+                    />
+                    <Field
+                      component={PlaceInput}
+                      name="venue"
+                      onSelect={this.handleVenueSelect}
+                      options={{
+                        location: new google.maps.LatLng(cityLatLng),
+                        radius: 1000,
+                        types: ['establishment'],
+                      }}
+                      placeholder="Event venue"
+                      type="text"
+                    />
+                  </React.Fragment>
+                )
+              }
               <Field
                 component={DateInput}
                 dateFormat="YYYY-MM-DD HH:mm"
@@ -205,61 +259,3 @@ export default connect(mapState, actions)(
     },
   )(EventForm),
 );
-
-
-{/* <Form.Field>
-  <label htmlFor="title">
-    <input
-      name="title"
-      onChange={this.onInputChange}
-      placeholder="Event Title"
-      value={title}
-    />
-    Event Title
-            </label>
-</Form.Field>
-  <Form.Field>
-    <label htmlFor="date">
-      <input
-        name="date"
-        onChange={this.onInputChange}
-        type="date"
-        value={date}
-        placeholder="Event Date"
-      />
-      Event Date
-            </label>
-  </Form.Field>
-  <Form.Field>
-    <label htmlFor="city">
-      <input
-        name="city"
-        onChange={this.onInputChange}
-        value={city}
-        placeholder="City event is taking place"
-      />
-      City
-            </label>
-  </Form.Field>
-  <Form.Field>
-    <label htmlFor="venue">
-      <input
-        name="venue"
-        onChange={this.onInputChange}
-        value={venue}
-        placeholder="Enter the Venue of the event"
-      />
-      Venue
-            </label>
-  </Form.Field>
-  <Form.Field>
-    <label htmlFor="hostedBy">
-      <input
-        name="hostedBy"
-        onChange={this.onInputChange}
-        value={hostedBy}
-        placeholder="Enter the name of person hosting"
-      />
-      Hosted By
-            </label>
-  </Form.Field> */}
