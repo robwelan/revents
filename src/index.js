@@ -19,6 +19,6 @@ ReactDOM.render(
       </ScrollToTop>
     </BrowserRouter>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 registerServiceWorker();
