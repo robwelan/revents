@@ -26,6 +26,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 
 // Modules
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown';
+import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal';
 
 // Views
 import Comment from 'semantic-ui-react/dist/commonjs/views/Comment';
@@ -66,6 +67,7 @@ export {
   Label,
   List,
   Menu,
+  Modal,
   Select,
   Segment,
 };
