@@ -5,7 +5,7 @@ import {
 } from '../../../frameworks/semantic-ui-react/scripts';
 
 const SignedOutMenu = (props) => {
-  const { signIn } = props;
+  const { register, signIn } = props;
 
   return (
     <Menu.Item position="right">
@@ -19,6 +19,7 @@ const SignedOutMenu = (props) => {
         basic
         content="Register"
         inverted
+        onClick={register}
         style={{ marginLeft: '0.5em' }}
       />
     </Menu.Item>

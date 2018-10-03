@@ -6,6 +6,7 @@ import EventDetailedPage from '../../features/events/EventDetailed/EventDetailed
 import EventForm from '../../features/events/EventForm/EventForm';
 import HomePage from '../../features/home/HomePage';
 import NavBar from '../../features/nav/NavBar/NavBar';
+import ModalManager from '../../features/modals/ModalManager';
 import PeopleDashboard from '../../features/user/PeopleDashboard/PeopleDashboard';
 import SettingsDashboard from '../../features/user/Settings/SettingsDashboard';
 import UserDetailedPage from '../../features/user/UserDetailed/UserDetailedPage';
@@ -15,6 +16,7 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
+        <ModalManager />
         <Switch>
           <Route exact path="/" component={HomePage} />
         </Switch>

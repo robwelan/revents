@@ -5,6 +5,7 @@ import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-au
 import GoogleMapReact from 'google-map-react';
 import { incrementCounter, decrementCounter } from './testActions';
 import { Button, Icon } from '../../frameworks/semantic-ui-react/scripts';
+import { openModal } from '../modals/modalActions';
 
 const mapState = state => ({
   data: state.test.data,
@@ -13,6 +14,7 @@ const mapState = state => ({
 const actions = {
   incrementCounter,
   decrementCounter,
+  openModal,
 }
 
 const Marker = () => <Icon color="red" name="marker" size="big" />;
@@ -59,7 +61,12 @@ class TestComponent extends Component {
   onChange = address => this.setState({ address });
 
   render() {
-    const { data, decrementCounter, incrementCounter } = this.props;
+    const {
+      data,
+      decrementCounter,
+      incrementCounter,
+      openModal,
+    } = this.props;
     const inputProps = {
       value: this.state.address,
       onChange: this.onChange,
@@ -88,6 +95,11 @@ class TestComponent extends Component {
           onClick={decrementCounter}
           color="red"
           content="-"
+        />
+        <Button
+          onClick={() => openModal('TestModal', { data: 43 })}
+          color="teal"
+          content="Open Modal"
         />
         <br />
         <br />
