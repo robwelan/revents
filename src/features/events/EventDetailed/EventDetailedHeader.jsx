@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import format from 'date-fns/format';
 import {
   Button,
   Header,
@@ -23,6 +24,7 @@ const eventImageTextStyle = {
 
 const EventDetailedHeader = (props) => {
   const { event } = props;
+  const formattedDate = format(event.date, 'dddd Do MMMM');
 
   return (
     <Segment.Group>
@@ -45,7 +47,7 @@ const EventDetailedHeader = (props) => {
                   content={event.title}
                   style={{ color: 'white' }}
                 />
-                <p>{event.date}</p>
+                <p>{formattedDate}</p>
                 <p>
                   Hosted by
                   {' '}

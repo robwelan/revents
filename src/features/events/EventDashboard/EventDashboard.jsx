@@ -5,7 +5,9 @@ import { Grid } from '../../../frameworks/semantic-ui-react/scripts';
 import EventList from '../EventList/EventList';
 // import EventForm from '../EventForm/EventForm';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
+import RecentActivity from '../EventActivity/EventActivity';
 import { deleteEvent } from '../eventActions';
+import EventActivity from '../EventActivity/EventActivity';
 
 const actions = {
   //  doCreateEvent: createEvent,
@@ -123,7 +125,7 @@ class EventDashboard extends Component {
           />
         </Grid.Column>
         <Grid.Column width={6}>
-
+          <EventActivity />
         </Grid.Column>
       </Grid>
     );

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import format from 'date-fns/format';
 import {
   Button,
   Icon,
@@ -15,6 +16,8 @@ class EventListItem extends Component {
       deleteEvent,
       event,
     } = this.props;
+    const formattedDate = format(event.date, 'dddd Do MMMM');
+    const formattedTime = format(event.date, 'HH:mm');
 
     return (
       <Segment.Group>
@@ -37,8 +40,8 @@ class EventListItem extends Component {
         </Segment>
         <Segment>
           <span>
-            <Icon name="clock" /> {event.date}
-            {' | '}
+            <Icon name="clock" />
+            {` ${formattedDate} at ${formattedTime} | `}
             <Icon name="marker" /> {event.venue}
           </span>
         </Segment>
