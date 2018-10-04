@@ -1835,7 +1835,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5, classnames@^2.2.6:
+classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -3215,6 +3215,11 @@ eventemitter3@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
   integrity sha1-HIaZHYFq0eUEdQ5zh0Ik7PO+xQg=
+
+eventemitter3@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
+  integrity sha1-teEHm1n7XhuidxwKmTvgYKWMmbo=
 
 eventemitter3@^3.0.0:
   version "3.1.0"
@@ -7060,6 +7065,14 @@ react-redux-firebase@^2.1.8:
     hoist-non-react-statics "^2.3.1"
     lodash "^4.17.10"
     prop-types "^15.6.1"
+
+react-redux-toastr@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/react-redux-toastr/-/react-redux-toastr-7.4.0.tgz#3bf6d321cbafe4bf6721f1917460c7ced8b59f12"
+  integrity sha512-NmSSvTt9k3pwc5+bwdzy79mYQIJzNllc9NtA1B9teWdXB2mMQVwjhVL/+zWvSyPPotSsg3soqTz/sdItUEYsYw==
+  dependencies:
+    classnames "^2.2.3"
+    eventemitter3 "^2.0.3"
 
 react-redux@^5.0.7:
   version "5.0.7"
