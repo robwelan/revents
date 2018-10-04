@@ -17,6 +17,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
 import Label from 'semantic-ui-react/dist/commonjs/elements/Label';
 import List from 'semantic-ui-react/dist/commonjs/elements/List';
+import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 
 // Grid
@@ -25,6 +26,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 // import GridRow from 'semantic-ui-react/dist/commonjs/collections/Grid/GridRow';
 
 // Modules
+import Dimmer from 'semantic-ui-react/dist/commonjs/modules/Dimmer';
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown';
 import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal';
 
@@ -51,6 +53,7 @@ export {
   Button,
   Comment,
   Container,
+  Dimmer,
   Dropdown,
   Form,
   // FormField,
@@ -66,6 +69,7 @@ export {
   Image,
   Label,
   List,
+  Loader,
   Menu,
   Modal,
   Select,
