@@ -12,6 +12,7 @@ import Menu from 'semantic-ui-react/dist/commonjs//collections/Menu';
 // Elements
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button';
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
+import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header';
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
@@ -54,6 +55,7 @@ export {
   Comment,
   Container,
   Dimmer,
+  Divider,
   Dropdown,
   Form,
   // FormField,
