@@ -8,7 +8,7 @@ class EventList extends Component {
     return (
       <div>
         {/* <h1>Event List</h1> */}
-        {events.map((event) => (
+        {events && events.map((event) => (
           <EventListItem
             event={event}
             deleteEvent={deleteEvent}

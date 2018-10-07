@@ -16,8 +16,9 @@ class EventListItem extends Component {
       deleteEvent,
       event,
     } = this.props;
-    const formattedDate = format(event.date, 'dddd Do MMMM');
-    const formattedTime = format(event.date, 'HH:mm');
+    const eventDate = event.date.toDate();
+    const formattedDate = format(eventDate, 'dddd Do MMMM');
+    const formattedTime = format(eventDate, 'HH:mm');
 
     return (
       <Segment.Group>
@@ -47,12 +48,13 @@ class EventListItem extends Component {
         </Segment>
         <Segment secondary>
           <List horizontal>
-            {event.attendees && event.attendees.map((attendee) => (
-              <EventListAttendee
-                attendee={attendee}
-                key={attendee.id}
-              />
-            ))}
+            {event.attendees &&
+              Object.values(event.attendees).map((attendee, index) => (
+                <EventListAttendee
+                  attendee={attendee}
+                  key={index}
+                />
+              ))}
           </List>
         </Segment>
         <Segment clearing>

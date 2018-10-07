@@ -1,12 +1,43 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
+import { combineValidators, isRequired } from 'revalidate';
 import TextInput from '../../../app/common/form/TextInput';
-import { Form, Segment, Button } from '../../../frameworks/semantic-ui-react/scripts';
+import SocialLogin from '../SocialLogin/SocialLogin';
+import {
+  Button,
+  Divider,
+  Form,
+  Label,
+  Segment,
+} from '../../../frameworks/semantic-ui-react/scripts';
+import { registerUser } from '../authActions';
 
-const RegisterForm = () => {
+const actions = {
+  doRegisterUser: registerUser,
+};
+
+const validate = combineValidators({
+  displayName: isRequired('displayName'),
+  email: isRequired('email'),
+  password: isRequired('password'),
+});
+
+const RegisterForm = (props) => {
+  const {
+    doRegisterUser,
+    error,
+    handleSubmit,
+    invalid,
+    submitting,
+  } = props;
+
   return (
     <div>
-      <Form size="large">
+      <Form
+        onSubmit={handleSubmit(doRegisterUser)}
+        size="large"
+      >
         <Segment>
           <Field
             name="displayName"
@@ -26,13 +57,43 @@ const RegisterForm = () => {
             component={TextInput}
             placeholder="Password"
           />
-          <Button fluid size="large" color="teal">
+          <Button disabled={invalid || submitting} fluid size="large" color="teal">
             Register
           </Button>
+
+          {error
+            && (
+              <React.Fragment>
+                <br />
+                <Label
+                  basic
+                  fluid
+                  color="red"
+                >
+                  {error}
+                </Label>
+              </React.Fragment>
+            )
+          }
+
+          <Divider horizontal>Or</Divider>
+          <SocialLogin />
         </Segment>
       </Form>
     </div>
   );
 };
 
-export default reduxForm({ form: 'registerForm' })(RegisterForm);
+export default connect(
+  null,
+  actions,
+)(
+  reduxForm(
+    {
+      form: 'registerForm',
+      validate,
+    },
+  )(
+    RegisterForm,
+  ),
+);
