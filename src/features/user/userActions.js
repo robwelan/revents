@@ -1,8 +1,16 @@
 import moment from 'moment';
 import { toastr } from 'react-redux-toastr';
 
-const defaultExport = () => {
-  console.log('boo');
+const isValidDate = (date) => {
+  const d = moment(date);
+  if (d == null || !d.isValid()) return false;
+
+  const tosDate = date.toString();
+  const tosD = d.toString();
+
+  if (!tosD.indexOf(tosDate)) return false;
+
+  return true;
 };
 
 export const updateProfile = user => (
@@ -18,8 +26,24 @@ export const updateProfile = user => (
       ...updatedUser
     } = user;
 
-    if (updatedUser.dateOfBirth !== getState().firebase.profile.dateOfBirth) {
-      updatedUser.dateOfBirth = moment(updatedUser.dateOfBirth).toDate();
+    const storeBirthDate = getState().firebase.profile.dateOfBirth;
+    const userBirthDate = updatedUser.dateOfBirth;
+
+    if (userBirthDate !== storeBirthDate) {
+      const newBirthDate = moment(userBirthDate).toDate();
+      console.log(newBirthDate)
+      if (typeof (storeBirthDate) === 'undefined') {
+        // birth date has never been entered prior to this...
+        updatedUser.dateOfBirth = newBirthDate;
+      }
+
+      if (typeof (storeBirthDate) !== 'undefined' && isValidDate(newBirthDate)) {
+        updatedUser.dateOfBirth = newBirthDate;
+      }
+      // else {
+      //       throw new Error('Could not generate birth date from updated user.');
+      // delete field or throw error?
+      //        }
     }
 
     try {
@@ -29,5 +53,3 @@ export const updateProfile = user => (
       console.error('Error Report: ', { error });
     }
   });
-
-export default defaultExport;
