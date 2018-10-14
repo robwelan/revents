@@ -1,0 +1,33 @@
+import moment from 'moment';
+import { toastr } from 'react-redux-toastr';
+
+const defaultExport = () => {
+  console.log('boo');
+};
+
+export const updateProfile = user => (
+  async (
+    dispatch,
+    getState,
+    { getFirebase },
+  ) => {
+    const firebase = getFirebase();
+    const {
+      isLoaded,
+      isEmpty,
+      ...updatedUser
+    } = user;
+
+    if (updatedUser.dateOfBirth !== getState().firebase.profile.dateOfBirth) {
+      updatedUser.dateOfBirth = moment(updatedUser.dateOfBirth).toDate();
+    }
+
+    try {
+      await firebase.updateProfile(updatedUser);
+      toastr.success('Success', 'Your profile has been updated.');
+    } catch (error) {
+      console.error('Error Report: ', { error });
+    }
+  });
+
+export default defaultExport;
