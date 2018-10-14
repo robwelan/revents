@@ -10,7 +10,9 @@ const RadioInput = (props) => {
   } = props;
 
   return (
-    <Form.Field>
+    <Form.Field
+      width={width}
+    >
       <div
         className="ui radio"
       >
