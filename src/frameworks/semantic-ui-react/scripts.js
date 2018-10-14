@@ -32,6 +32,7 @@ import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown';
 import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal';
 
 // Views
+import Card from 'semantic-ui-react/dist/commonjs/views/Card/Card'
 import Comment from 'semantic-ui-react/dist/commonjs/views/Comment';
 import Item from 'semantic-ui-react/dist/commonjs/views/Item';
 // import ItemContent from 'semantic-ui-react/dist/commonjs/views/Item/ItemContent';
@@ -52,6 +53,7 @@ import Item from 'semantic-ui-react/dist/commonjs/views/Item';
 
 export {
   Button,
+  Card,
   Comment,
   Container,
   Dimmer,
