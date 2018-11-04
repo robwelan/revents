@@ -59,6 +59,8 @@ class PhotosPage extends Component {
       image: {},
     };
 
+    this.refCropper = React.createRef();
+
     this.cancelCrop = this.cancelCrop.bind(this);
     this.cropImage = this.cropImage.bind(this);
     this.handlePhotoDelete = this.handlePhotoDelete.bind(this);
@@ -74,11 +76,11 @@ class PhotosPage extends Component {
   }
 
   cropImage() {
-    if (typeof this.refs.cropper.getCroppedCanvas() === 'undefined') {
+    if (typeof this.refCropper.current.getCroppedCanvas() === 'undefined') {
       return;
     }
 
-    this.refs.cropper.getCroppedCanvas().toBlob((blob) => {
+    this.refCropper.current.getCroppedCanvas().toBlob((blob) => {
       const imageUrl = URL.createObjectURL(blob);
 
       this.setState({
@@ -180,7 +182,7 @@ class PhotosPage extends Component {
                   cropBoxResizable={true}
                   dragMode="move"
                   guides={false}
-                  ref="cropper"
+                  ref={this.refCropper}
                   scalable={true}
                   src={files[0].preview}
                   style={{ height: 200, width: '100%' }}
