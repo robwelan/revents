@@ -8,7 +8,7 @@ import {
 } from '../../../frameworks/semantic-ui-react/scripts';
 
 const SignedInMenu = (props) => {
-  const { profile, signOut } = props;
+  const { auth, profile, signOut } = props;
 
   return (
     <Menu.Item position="right">
@@ -25,7 +25,12 @@ const SignedInMenu = (props) => {
           <Dropdown.Item text="Create Event" icon="plus" />
           <Dropdown.Item text="My Events" icon="calendar" />
           <Dropdown.Item text="My Network" icon="users" />
-          <Dropdown.Item text="My Profile" icon="user" />
+          <Dropdown.Item
+            as={Link}
+            icon="user"
+            text="My Profile"
+            to={`/profile/${auth.uid}`}
+          />
           <Dropdown.Item
             as={Link}
             icon="settings"
