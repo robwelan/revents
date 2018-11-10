@@ -1,67 +1,70 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
 import {
   Button,
   Card, Grid,
   Header,
-  Icon,
   Image,
-  Item,
-  List,
   Menu,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
+import UserDetailedAbout from './UserDetailedAbout';
+import UserDetailedHeader from './UserDetailedHeader';
+import UserDetailedInterests from './UserDetailedInterests';
+import UserDetailedPhotos from './UserDetailedPhotos';
+
+const mapState = state => ({
+  auth: state.firebase.auth,
+  profile: state.firebase.profile,
+  photos: state.firestore.ordered.photos,
+});
+
+const query = ({ auth }) => [
+  {
+    collection: 'users',
+    doc: auth.uid,
+    subcollections: [
+      {
+        collection: 'photos',
+      },
+    ],
+    storeAs: 'photos',
+  },
+];
 
 class UserDetailedPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
 
   render() {
+    const { photos, profile } = this.props;
 
     return (
       <Grid>
         <Grid.Column width={16}>
-          <Segment>
-            <Item.Group>
-              <Item>
-                <Item.Image avatar size='small' src='https://randomuser.me/api/portraits/men/20.jpg' />
-                <Item.Content verticalAlign='bottom'>
-                  <Header as='h1'>First Name</Header>
-                  <br />
-                  <Header as='h3'>Occupation</Header>
-                  <br />
-                  <Header as='h3'>27, Lives in London, UK</Header>
-                </Item.Content>
-              </Item>
-            </Item.Group>
-
-          </Segment>
+          <UserDetailedHeader
+            profile={profile}
+          />
         </Grid.Column>
         <Grid.Column width={12}>
           <Segment>
             <Grid columns={2}>
               <Grid.Column width={10}>
-                <Header icon='smile' content='About Display Name' />
-                <p>I am a: <strong>Occupation Placeholder</strong></p>
-                <p>Originally from <strong>United Kingdom</strong></p>
-                <p>Member Since: <strong>28th March 2018</strong></p>
-                <p>Description of user</p>
-
+                <UserDetailedAbout
+                  profile={profile}
+                />
               </Grid.Column>
               <Grid.Column width={6}>
-
-                <Header icon='heart outline' content='Interests' />
-                <List>
-                  <Item>
-                    <Icon name='heart' />
-                    <Item.Content>Interest 1</Item.Content>
-                  </Item>
-                  <Item>
-                    <Icon name='heart' />
-                    <Item.Content>Interest 2</Item.Content>
-                  </Item>
-                  <Item>
-                    <Icon name='heart' />
-                    <Item.Content>Interest 3</Item.Content>
-                  </Item>
-                </List>
+                <UserDetailedInterests
+                  interests={profile.interests}
+                />
               </Grid.Column>
             </Grid>
 
@@ -69,21 +72,21 @@ class UserDetailedPage extends Component {
         </Grid.Column>
         <Grid.Column width={4}>
           <Segment>
-            <Button color='teal' fluid basic content='Edit Profile' />
+            <Button
+              as={Link}
+              basic
+              color="teal"
+              content="Edit Profile"
+              fluid
+              to="/settings"
+            />
           </Segment>
         </Grid.Column>
 
         <Grid.Column width={12}>
-          <Segment attached>
-            <Header icon='image' content='Photos' />
-
-            <Image.Group size='small'>
-              <Image src='https://randomuser.me/api/portraits/men/20.jpg' />
-              <Image src='https://randomuser.me/api/portraits/men/20.jpg' />
-              <Image src='https://randomuser.me/api/portraits/men/20.jpg' />
-              <Image src='https://randomuser.me/api/portraits/men/20.jpg' />
-            </Image.Group>
-          </Segment>
+          <UserDetailedPhotos
+            photos={photos}
+          />
         </Grid.Column>
 
         <Grid.Column width={12}>
@@ -103,10 +106,10 @@ class UserDetailedPage extends Component {
                 <Card.Content>
                   <Card.Header textAlign='center'>
                     Event Title
-                                    </Card.Header>
+                  </Card.Header>
                   <Card.Meta textAlign='center'>
                     28th March 2018 at 10:00 PM
-                                    </Card.Meta>
+                  </Card.Meta>
                 </Card.Content>
               </Card>
 
@@ -115,10 +118,10 @@ class UserDetailedPage extends Component {
                 <Card.Content>
                   <Card.Header textAlign='center'>
                     Event Title
-                                    </Card.Header>
+                  </Card.Header>
                   <Card.Meta textAlign='center'>
                     28th March 2018 at 10:00 PM
-                                    </Card.Meta>
+                  </Card.Meta>
                 </Card.Content>
               </Card>
 
@@ -131,4 +134,19 @@ class UserDetailedPage extends Component {
   }
 }
 
-export default UserDetailedPage;
+UserDetailedPage.defaultProps = {
+  photos: [],
+  profile: {},
+};
+
+UserDetailedPage.propTypes = {
+  photos: PropTypes.arrayOf(
+    PropTypes.shape(),
+  ),
+  profile: PropTypes.shape(),
+};
+
+export default compose(
+  connect(mapState),
+  firestoreConnect(auth => query(auth)),
+)(UserDetailedPage);
