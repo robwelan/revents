@@ -1,6 +1,18 @@
-// import firebase from 'firebase';
-import * as firebase from 'firebase';
+/*
+  minimal way to import firebase and firestore
+  uncomment the things you need...
+*/
+import firebase from 'firebase/app';
+import 'firebase/auth';
+// import 'firebase/database';
 import 'firebase/firestore';
+// import 'firebase/functions';
+// import 'firebase/storage';
+// import 'firebase/messaging';
+
+/* the maximal way */
+// import * as firebase from 'firebase';
+// import 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
