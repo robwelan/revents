@@ -7,7 +7,7 @@ import EventDetailedChat from './EventDetailedChat';
 import EventDetailedHeader from './EventDetailedHeader';
 import EventDetailedInfo from './EventDetailedInfo';
 import EventDetailedSidebar from './EventDetailedSidebar';
-import { objectToArray } from '../../../app/common/util/helpers';
+import { objectHasKey, objectToArray } from '../../../app/common/util/helpers';
 import { cancelGoingToEvent, goingToEvent } from '../../user/userActions';
 
 const actions = {
@@ -16,21 +16,28 @@ const actions = {
 };
 
 const mapState = (state, ownProps) => {
+  const { id } = ownProps.match.params;
   let event = {};
 
-  if (
-    state.firestore.ordered.events
-    && state.firestore.ordered.events[0]
-  ) {
-    /* destructuring does not match this use case very well */
-    /* eslint-disable */
-    event = state.firestore.ordered.events[0];
-
-    if (state.firestore.ordered.events.length > 0) {
-      const { id } = ownProps.match.params;
-      event = Object.assign({}, state.firestore.ordered.events.filter(evt => evt.id === id)[0]);
+  if (state.firestore.data.events) {
+    const { events } = state.firestore.data;
+    if (objectHasKey(events, id)) {
+      event = state.firestore.data.events[id];
     }
   }
+
+  // if (
+  //   state.firestore.ordered.events
+  //   && state.firestore.ordered.events[0]
+  // ) {
+  //   /* destructuring does not match this use case very well */
+  //   /* eslint-disable */
+  //   event = state.firestore.ordered.events[0];
+
+  //   if (state.firestore.ordered.events.length > 0) {
+  //     event = Object.assign({}, state.firestore.ordered.events.filter(evt => evt.id === id)[0]);
+  //   }
+  // }
 
   return {
     event,
@@ -39,10 +46,6 @@ const mapState = (state, ownProps) => {
 };
 
 class EventDetailedPage extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   async componentDidMount() {
     const { firestore, match } = this.props;
     const { id } = match.params;

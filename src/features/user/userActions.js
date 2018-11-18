@@ -210,6 +210,7 @@ export const cancelGoingToEvent = event => (
       await firestore.delete(
         `event_attendee/${event.id}_${user.uid}`,
       );
+
       toastr.success('Success', 'You have removed yourself from the Event');
     } catch (error) {
       console.error(error);

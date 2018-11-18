@@ -31,3 +31,11 @@ export const createNewEvent = (user, photoURL, event) => {
     },
   };
 };
+
+export const objectHasKey = (o, k) => {
+  let check = false;
+
+  check = Object.prototype.hasOwnProperty.call(o, k);
+
+  return check;
+};
