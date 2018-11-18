@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -23,8 +24,18 @@ const eventImageTextStyle = {
 };
 
 const EventDetailedHeader = (props) => {
-  const { event } = props;
-  const formattedDate = format(event.date, 'dddd Do MMMM');
+  const {
+    cancelGoingToEvent,
+    goingToEvent,
+    isGoing,
+    isHost,
+    event,
+  } = props;
+  let eventDate;
+
+  if (event.date) {
+    eventDate = format(event.date.toDate(), 'dddd Do MMMM');
+  }
 
   return (
     <Segment.Group>
@@ -47,7 +58,7 @@ const EventDetailedHeader = (props) => {
                   content={event.title}
                   style={{ color: 'white' }}
                 />
-                <p>{formattedDate}</p>
+                <p>{eventDate}</p>
                 <p>
                   Hosted by
                   {' '}
@@ -62,20 +73,60 @@ const EventDetailedHeader = (props) => {
       </Segment>
 
       <Segment attached="bottom">
-        <Button>Cancel My Place</Button>
-        <Button color="teal">JOIN THIS EVENT</Button>
+        {
+          !isHost
+          && (
+            <React.Fragment>
+              {
+                isGoing
+                  ? (
+                    <Button
+                      onClick={() => cancelGoingToEvent(event)}
+                    >
+                      Cancel My Place
+                    </Button>
+                  ) : (
+                    <Button
+                      color="teal"
+                      onClick={() => goingToEvent(event)}
+                    >
+                      JOIN THIS EVENT
+                    </Button>
+                  )
+              }
+            </React.Fragment>
+          )
+        }
 
-        <Button
-          as={Link}
-          color="orange"
-          floated="right"
-          to={`/manage/${event.id}`}
-        >
-          Manage Event
-        </Button>
+        {
+          isHost
+          && (
+            <Button
+              as={Link}
+              color="orange"
+              to={`/manage/${event.id}`}
+            >
+              Manage Event
+            </Button>
+          )
+        }
       </Segment>
     </Segment.Group>
   );
+};
+
+EventDetailedHeader.defaultProps = {
+  isGoing: false,
+  isHost: false,
+  event: {},
+};
+
+EventDetailedHeader.propTypes = {
+  cancelGoingToEvent: PropTypes.func.isRequired,
+  goingToEvent: PropTypes.func.isRequired,
+  isGoing: PropTypes.bool,
+  isHost: PropTypes.bool,
+  event: PropTypes.shape(),
 };
 
 export default EventDetailedHeader;

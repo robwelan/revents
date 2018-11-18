@@ -65,11 +65,14 @@ const UserDetailedAbout = (props) => {
 };
 
 UserDetailedAbout.defaultProps = {
-  profile: {},
+  profile: false || {},
 };
 
 UserDetailedAbout.propTypes = {
-  profile: PropTypes.shape(),
+  profile: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape(),
+  ]),
 };
 
 export default UserDetailedAbout;

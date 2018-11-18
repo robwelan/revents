@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import format from 'date-fns/format';
 import EventDetailedMap from './EventDetailedMap';
@@ -34,8 +35,14 @@ class EventDetailedInfo extends Component {
   render() {
     const { event } = this.props;
     const { showMap } = this.state;
-    const formattedDate = format(event.date, 'dddd Do MMM');
-    const formattedTime = format(event.date, 'h:mm A');
+    let eventDate;
+
+    if (event.date) {
+      eventDate = event.date.toDate();
+    }
+
+    const formattedDate = format(eventDate, 'dddd Do MMM');
+    const formattedTime = format(eventDate, 'h:mm A');
 
     return (
       <Segment.Group>
@@ -88,8 +95,16 @@ class EventDetailedInfo extends Component {
           )
         }
       </Segment.Group>
-    )
+    );
   }
 }
+
+EventDetailedInfo.defaultProps = {
+  event: {},
+};
+
+EventDetailedInfo.propTypes = {
+  event: PropTypes.shape(),
+};
 
 export default EventDetailedInfo;

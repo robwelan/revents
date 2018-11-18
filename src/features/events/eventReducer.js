@@ -21,9 +21,7 @@ export const deleteEvent = (state, payload) => (
   ]
 );
 
-export const fetchEvents = (state, payload) => {
-  return payload.events;
-};
+export const fetchEvents = (state, payload) => payload.events;
 
 export const updateEvent = (state, payload) => (
   [

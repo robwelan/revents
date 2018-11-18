@@ -1,4 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Item,
   Label,
@@ -51,7 +53,11 @@ const EventDetailedSidebar = (props) => {
                 />
                 <Item.Content verticalAlign="middle">
                   <Item.Header as="h3">
-                    <a>{attendee.name}</a>
+                    <Link
+                      to={`/profile/${attendee.id}`}
+                    >
+                      {attendee.displayName}
+                    </Link>
                   </Item.Header>
                 </Item.Content>
               </Item>
@@ -61,6 +67,16 @@ const EventDetailedSidebar = (props) => {
       </Segment>
     </div>
   );
+};
+
+EventDetailedSidebar.defaultProps = {
+  attendees: [],
+};
+
+EventDetailedSidebar.propTypes = {
+  attendees: PropTypes.arrayOf(
+    PropTypes.shape(),
+  ),
 };
 
 export default EventDetailedSidebar;

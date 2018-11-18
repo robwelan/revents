@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, isEmpty } from 'react-redux-firebase';
 import {
-  Button,
   Card, Grid,
   Header,
   Image,
@@ -16,25 +14,31 @@ import UserDetailedAbout from './UserDetailedAbout';
 import UserDetailedHeader from './UserDetailedHeader';
 import UserDetailedInterests from './UserDetailedInterests';
 import UserDetailedPhotos from './UserDetailedPhotos';
+import UserDetailedSidebar from './UserDetailedSidebar';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { userDetailedQuery } from '../userQueries';
 
-const mapState = state => ({
-  auth: state.firebase.auth,
-  profile: state.firebase.profile,
-  photos: state.firestore.ordered.photos,
-});
+const mapState = (state, ownProps) => {
+  let userUid = null;
+  let profile = {};
+  const { id } = ownProps.match.params;
+  const { uid } = state.auth;
 
-const query = ({ auth }) => [
-  {
-    collection: 'users',
-    doc: auth.uid,
-    subcollections: [
-      {
-        collection: 'photos',
-      },
-    ],
-    storeAs: 'photos',
-  },
-];
+  if (id === uid) {
+    profile = state.firebase.profile;
+  } else {
+    profile = !isEmpty(state.firestore.ordered.profile) && state.firestore.ordered.profile[0];
+    userUid = id;
+  }
+
+  return {
+    auth: state.firebase.auth,
+    photos: state.firestore.ordered.photos,
+    profile,
+    requesting: state.firestore.status.requesting,
+    userUid,
+  };
+};
 
 class UserDetailedPage extends Component {
   constructor(props) {
@@ -44,7 +48,17 @@ class UserDetailedPage extends Component {
   }
 
   render() {
-    const { photos, profile } = this.props;
+    const {
+      auth,
+      match,
+      photos,
+      profile,
+      requesting,
+    } = this.props;
+    const isCurrentUser = auth.uid === match.params.id;
+    const loading = Object.values(requesting).some(a => a === true);
+
+    if (loading) return <LoadingComponent inverted />;
 
     return (
       <Grid>
@@ -71,22 +85,19 @@ class UserDetailedPage extends Component {
           </Segment>
         </Grid.Column>
         <Grid.Column width={4}>
-          <Segment>
-            <Button
-              as={Link}
-              basic
-              color="teal"
-              content="Edit Profile"
-              fluid
-              to="/settings"
-            />
-          </Segment>
+          <UserDetailedSidebar
+            isCurrentUser={isCurrentUser}
+          />
         </Grid.Column>
 
         <Grid.Column width={12}>
-          <UserDetailedPhotos
-            photos={photos}
-          />
+          {photos && photos.length > 0
+            && (
+              <UserDetailedPhotos
+                photos={photos}
+              />
+            )
+          }
         </Grid.Column>
 
         <Grid.Column width={12}>
@@ -116,10 +127,10 @@ class UserDetailedPage extends Component {
               <Card>
                 <Image src={'/assets/categoryImages/drinks.jpg'} />
                 <Card.Content>
-                  <Card.Header textAlign='center'>
+                  <Card.Header textAlign="center">
                     Event Title
                   </Card.Header>
-                  <Card.Meta textAlign='center'>
+                  <Card.Meta textAlign="center">
                     28th March 2018 at 10:00 PM
                   </Card.Meta>
                 </Card.Content>
@@ -129,24 +140,26 @@ class UserDetailedPage extends Component {
           </Segment>
         </Grid.Column>
       </Grid>
-
     );
   }
 }
 
 UserDetailedPage.defaultProps = {
   photos: [],
-  profile: {},
+  profile: false || {},
 };
 
 UserDetailedPage.propTypes = {
   photos: PropTypes.arrayOf(
     PropTypes.shape(),
   ),
-  profile: PropTypes.shape(),
+  profile: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape(),
+  ]),
 };
 
 export default compose(
   connect(mapState),
-  firestoreConnect(auth => query(auth)),
+  firestoreConnect((auth, userUid) => userDetailedQuery(auth, userUid)),
 )(UserDetailedPage);

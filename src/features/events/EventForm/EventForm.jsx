@@ -1,6 +1,8 @@
 /* global google */
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withFirestore } from 'react-redux-firebase';
 import { Field, reduxForm } from 'redux-form';
 import {
   combineValidators,
@@ -10,8 +12,6 @@ import {
 } from 'revalidate';
 import Script from 'react-load-script';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import cuid from 'cuid';
-import moment from 'moment';
 import {
   Button,
   Grid,
@@ -19,7 +19,7 @@ import {
   Form,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
-import { createEvent, updateEvent } from '../eventActions';
+import { createEvent, updateEvent, cancelToggle } from '../eventActions';
 import DateInput from '../../../app/common/form/DateInput';
 import PlaceInput from '../../../app/common/form/PlaceInput';
 import SelectInput from '../../../app/common/form/SelectInput';
@@ -27,6 +27,7 @@ import TextArea from '../../../app/common/form/TextArea';
 import TextInput from '../../../app/common/form/TextInput';
 
 const actions = {
+  doCancelToggle: cancelToggle,
   doCreateEvent: createEvent,
   doUpdateEvent: updateEvent,
 };
@@ -41,16 +42,25 @@ const category = [
 ];
 
 const mapState = (state, ownProps) => {
-  const eventId = ownProps.match.params.id;
-
   let event = {};
 
-  if (eventId && state.events.length > 0) {
-    event = Object.assign({}, state.events.filter(evt => evt.id === eventId)[0]);
+  if (
+    state.firestore.ordered.events
+    && state.firestore.ordered.events[0]
+  ) {
+    /* destructuring does not match this use case very well */
+    /* eslint-disable */
+    event = state.firestore.ordered.events[0];
+
+    if (state.firestore.ordered.events.length > 0) {
+      const { id } = ownProps.match.params;
+      event = Object.assign({}, state.firestore.ordered.events.filter(evt => evt.id === id)[0]);
+    }
   }
 
   return {
     initialValues: event,
+    event,
   };
 };
 
@@ -83,14 +93,25 @@ class EventForm extends Component {
     this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
-  handleScriptLoaded() {
-    this.setState({ scriptLoaded: true });
+  async componentDidMount() {
+    const { firestore, match } = this.props;
+    const { id } = match.params;
+
+    await firestore.setListener(`events/${id}`);
+  }
+
+  async componentWillUnmount() {
+    const { firestore, match } = this.props;
+    const { id } = match.params;
+
+    await firestore.unsetListener(`events/${id}`);
   }
 
   onFormSubmit(values) {
     const {
       doCreateEvent,
       doUpdateEvent,
+      event,
       history,
       initialValues,
     } = this.props;
@@ -98,24 +119,23 @@ class EventForm extends Component {
 
     const newValues = {
       ...values,
-      date: moment(values.date).format(),
       venueLatLng,
     };
 
     if (initialValues.id) {
+      if (Object.keys(newValues.venueLatLng).length === 0) {
+        newValues.venueLatLng = event.venueLatLng;
+      }
       doUpdateEvent(newValues);
       history.goBack();
     } else {
-      const newEvent = {
-        ...newValues,
-        id: cuid(),
-        hostPhotoURL: '/assets/user.png',
-        hostedBy: 'Bob',
-      };
-
-      doCreateEvent(newEvent);
+      doCreateEvent(newValues);
       history.push('/events');
     }
+  }
+
+  handleScriptLoaded() {
+    this.setState({ scriptLoaded: true });
   }
 
   handleCitySelect(selectedCity) {
@@ -140,19 +160,10 @@ class EventForm extends Component {
       });
   }
 
-  // onInputChange(e) {
-  //   const { event } = this.state;
-  //   const newEvent = event;
-
-  //   newEvent[e.target.name] = e.target.value;
-
-  //   this.setState({
-  //     event: newEvent,
-  //   });
-  // }
-
   render() {
     const {
+      event,
+      doCancelToggle,
       handleSubmit,
       history,
       invalid,
@@ -241,7 +252,26 @@ class EventForm extends Component {
               >
                 Submit
               </Button>
-              <Button onClick={history.goBack} type="button">Cancel</Button>
+              <Button
+                onClick={history.goBack}
+                type="button"
+              >
+                Cancel
+               </Button>
+              <Button
+                color={event.cancelled ? 'green' : 'red'}
+                floated="right"
+                onClick={() => doCancelToggle(!event.cancelled, event.id)}
+                type="button"
+              >
+                {
+                  event.cancelled
+                    ?
+                    'Reactivate Event'
+                    :
+                    'Cancel Event'
+                }
+              </Button>
             </Form>
           </Segment>
         </Grid.Column>
@@ -250,12 +280,27 @@ class EventForm extends Component {
   }
 }
 
-export default connect(mapState, actions)(
-  reduxForm(
-    {
-      form: 'eventForm',
-      enableReinitialize: true,
-      validate,
-    },
-  )(EventForm),
+EventForm.propTypes = {
+  change: PropTypes.func.isRequired,
+  doCancelToggle: PropTypes.func.isRequired,
+  doCreateEvent: PropTypes.func.isRequired,
+  doUpdateEvent: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  history: PropTypes.shape().isRequired,
+  initialValues: PropTypes.shape().isRequired,
+  invalid: PropTypes.bool.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+};
+
+export default withFirestore(
+  connect(mapState, actions)(
+    reduxForm(
+      {
+        form: 'eventForm',
+        enableReinitialize: true,
+        validate,
+      },
+    )(EventForm),
+  ),
 );

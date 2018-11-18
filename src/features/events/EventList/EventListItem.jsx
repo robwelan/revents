@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -5,15 +6,22 @@ import {
   Button,
   Icon,
   Item,
+  Label,
   List,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
 import EventListAttendee from './EventListAttendee';
+import { objectToArray } from '../../../app/common/util/helpers';
 
 class EventListItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
   render() {
     const {
-      deleteEvent,
       event,
     } = this.props;
     const eventDate = event.date.toDate();
@@ -31,10 +39,31 @@ class EventListItem extends Component {
                 src={event.hostPhotoURL}
               />
               <Item.Content>
-                <Item.Header as="a">{event.title}</Item.Header>
+                <Item.Header
+                  as={Link}
+                  to={`/event/${event.id}`}
+                >
+                  {event.title}
+                </Item.Header>
                 <Item.Description>
-                  Hosted by <a>{event.hostedBy}</a>
+                  {'Hosted by '}
+                  <Link
+                    to={`/profile/${event.hostUid}`}
+                  >
+                    {event.hostedBy}
+                  </Link>
                 </Item.Description>
+                {
+                  event.cancelled
+                  && (
+                    <Label
+                      color="red"
+                      content="This event has been Cancelled"
+                      ribbon="right"
+                      style={{ top: '-40px' }}
+                    />
+                  )
+                }
               </Item.Content>
             </Item>
           </Item.Group>
@@ -43,29 +72,27 @@ class EventListItem extends Component {
           <span>
             <Icon name="clock" />
             {` ${formattedDate} at ${formattedTime} | `}
-            <Icon name="marker" /> {event.venue}
+            <Icon name="marker" />
+            {' '}
+            {event.venue}
           </span>
         </Segment>
         <Segment secondary>
           <List horizontal>
-            {event.attendees &&
-              Object.values(event.attendees).map((attendee, index) => (
-                <EventListAttendee
-                  attendee={attendee}
-                  key={index}
-                />
-              ))}
+            {event.attendees
+              && (
+                objectToArray(event.attendees).map(attendee => (
+                  <EventListAttendee
+                    attendee={attendee}
+                    /* eslint-disable */
+                    key={attendee.id}
+                  />
+                ))
+              )}
           </List>
         </Segment>
         <Segment clearing>
           <span>{event.description}</span>
-          <Button
-            as="a"
-            color="red"
-            content="Delete"
-            floated="right"
-            onClick={deleteEvent(event.id)}
-          />
           <Button
             as={Link}
             color="teal"
@@ -77,6 +104,15 @@ class EventListItem extends Component {
       </Segment.Group>
     );
   }
+}
+
+EventListItem.defaultProps = {
+  event: {},
+};
+
+EventListItem.propTypes = {
+  deleteEvent: PropTypes.func.isRequired,
+  event: PropTypes.shape(),
 };
 
 export default EventListItem;

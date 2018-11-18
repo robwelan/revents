@@ -77,11 +77,14 @@ const UserDetailedHeader = (props) => {
 };
 
 UserDetailedHeader.defaultProps = {
-  profile: {},
+  profile: false || {},
 };
 
 UserDetailedHeader.propTypes = {
-  profile: PropTypes.shape(),
+  profile: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape(),
+  ]),
 };
 
 export default UserDetailedHeader;

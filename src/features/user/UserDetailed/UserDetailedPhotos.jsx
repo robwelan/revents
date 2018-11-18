@@ -5,6 +5,7 @@ import {
   Image,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
+import LazyLoad from 'react-lazyload';
 
 const UserDetailedPhotos = (props) => {
   const { photos } = props;
@@ -26,11 +27,23 @@ const UserDetailedPhotos = (props) => {
             >
               {
                 photos.map(photo => (
-                  <Image
+                  <LazyLoad
+                    height={150}
                     key={photo.id}
-                    src={photo.url}
-                    alt=""
-                  />
+                    placeholder={
+                      (
+                        <Image
+                          src={'/assets/user.png'}
+                          alt=""
+                        />
+                      )
+                    }
+                  >
+                    <Image
+                      src={photo.url}
+                      alt=""
+                    />
+                  </LazyLoad>
                 ))
               }
             </Image.Group>
