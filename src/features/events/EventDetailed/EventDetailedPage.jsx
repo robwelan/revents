@@ -23,6 +23,10 @@ const mapState = (state, ownProps) => {
     const { events } = state.firestore.data;
     if (objectHasKey(events, id)) {
       event = state.firestore.data.events[id];
+      event = {
+        ...event,
+        id,
+      };
     }
   }
 
@@ -76,7 +80,7 @@ class EventDetailedPage extends React.Component {
       && objectToArray(event.attendees);
     const isHost = event.hostUid === auth.uid;
     const isGoing = attendees && attendees.some(
-      a => a.id === auth.uid
+      a => a.id === auth.uid,
     );
 
     return (
@@ -101,15 +105,17 @@ class EventDetailedPage extends React.Component {
 }
 
 EventDetailedPage.defaultProps = {
+  auth: {},
   event: {},
 };
 
 EventDetailedPage.propTypes = {
+  auth: PropTypes.shape(),
   event: PropTypes.shape(),
   doCancelGoingToEvent: PropTypes.func.isRequired,
   doGoingToEvent: PropTypes.func.isRequired,
 };
 
 export default withFirestore(
-  connect(mapState, actions)(EventDetailedPage)
+  connect(mapState, actions)(EventDetailedPage),
 );

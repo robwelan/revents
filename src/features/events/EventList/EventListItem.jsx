@@ -24,9 +24,16 @@ class EventListItem extends Component {
     const {
       event,
     } = this.props;
-    const eventDate = event.date.toDate();
-    const formattedDate = format(eventDate, 'dddd Do MMMM');
-    const formattedTime = format(eventDate, 'HH:mm');
+
+    let eventDate = null;
+    let formattedDate = null;
+    let formattedTime = null;
+
+    if (event.date) {
+      eventDate = event.date.toDate();
+      formattedDate = format(eventDate, 'dddd Do MMMM');
+      formattedTime = format(eventDate, 'HH:mm');
+    }
 
     return (
       <Segment.Group>
