@@ -4,19 +4,22 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { firestoreConnect, isEmpty } from 'react-redux-firebase';
 import {
-  Card, Grid,
-  Header,
-  Image,
-  Menu,
+  Grid,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
 import UserDetailedAbout from './UserDetailedAbout';
+import UserDetailedEvents from './UserDetailedEvents';
 import UserDetailedHeader from './UserDetailedHeader';
 import UserDetailedInterests from './UserDetailedInterests';
 import UserDetailedPhotos from './UserDetailedPhotos';
 import UserDetailedSidebar from './UserDetailedSidebar';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { userDetailedQuery } from '../userQueries';
+import { getUserEvents } from '../userActions';
+
+const actions = {
+  doGetUserEvents: getUserEvents,
+};
 
 const mapState = (state, ownProps) => {
   let userUid = null;
@@ -33,6 +36,8 @@ const mapState = (state, ownProps) => {
 
   return {
     auth: state.firebase.auth,
+    events: state.events,
+    eventsLoading: state.async.loading,
     photos: state.firestore.ordered.photos,
     profile,
     requesting: state.firestore.status.requesting,
@@ -45,11 +50,29 @@ class UserDetailedPage extends Component {
     super(props);
 
     this.state = {};
+    this.changeTab = this.changeTab.bind(this);
+  }
+
+  async componentDidMount() {
+    const { doGetUserEvents, userUid } = this.props;
+    const events = doGetUserEvents(userUid);
+  }
+
+  changeTab(e, data) {
+    const { activeIndex } = data;
+    const {
+      doGetUserEvents,
+      userUid,
+    } = this.props;
+
+    doGetUserEvents(userUid, activeIndex);
   }
 
   render() {
     const {
       auth,
+      eventsLoading,
+      events,
       match,
       photos,
       profile,
@@ -101,43 +124,11 @@ class UserDetailedPage extends Component {
         </Grid.Column>
 
         <Grid.Column width={12}>
-          <Segment attached>
-            <Header icon='calendar' content='Events' />
-            <Menu secondary pointing>
-              <Menu.Item name='All Events' active />
-              <Menu.Item name='Past Events' />
-              <Menu.Item name='Future Events' />
-              <Menu.Item name='Events Hosted' />
-            </Menu>
-
-            <Card.Group itemsPerRow={5}>
-
-              <Card>
-                <Image src={'/assets/categoryImages/drinks.jpg'} />
-                <Card.Content>
-                  <Card.Header textAlign='center'>
-                    Event Title
-                  </Card.Header>
-                  <Card.Meta textAlign='center'>
-                    28th March 2018 at 10:00 PM
-                  </Card.Meta>
-                </Card.Content>
-              </Card>
-
-              <Card>
-                <Image src={'/assets/categoryImages/drinks.jpg'} />
-                <Card.Content>
-                  <Card.Header textAlign="center">
-                    Event Title
-                  </Card.Header>
-                  <Card.Meta textAlign="center">
-                    28th March 2018 at 10:00 PM
-                  </Card.Meta>
-                </Card.Content>
-              </Card>
-
-            </Card.Group>
-          </Segment>
+          <UserDetailedEvents
+            eventsLoading={eventsLoading}
+            events={events}
+            changeTab={this.changeTab}
+          />
         </Grid.Column>
       </Grid>
     );
@@ -145,11 +136,24 @@ class UserDetailedPage extends Component {
 }
 
 UserDetailedPage.defaultProps = {
+  auth: {},
+  events: [],
+  eventsLoading: false,
+  match: {},
   photos: [],
   profile: false || {},
+  requesting: {},
+  userUid: '',
 };
 
 UserDetailedPage.propTypes = {
+  auth: PropTypes.shape(),
+  doGetUserEvents: PropTypes.func.isRequired,
+  events: PropTypes.arrayOf(
+    PropTypes.shape(),
+  ),
+  eventsLoading: PropTypes.bool,
+  match: PropTypes.shape(),
   photos: PropTypes.arrayOf(
     PropTypes.shape(),
   ),
@@ -157,9 +161,11 @@ UserDetailedPage.propTypes = {
     PropTypes.bool,
     PropTypes.shape(),
   ]),
+  requesting: PropTypes.shape(),
+  userUid: PropTypes.string,
 };
 
 export default compose(
-  connect(mapState),
+  connect(mapState, actions),
   firestoreConnect((auth, userUid) => userDetailedQuery(auth, userUid)),
 )(UserDetailedPage);

@@ -10,7 +10,7 @@ import {
   asyncActionStart,
 } from '../async/asyncActions';
 import { createNewEvent } from '../../app/common/util/helpers';
-import fetchSampleData from '../../app/data/mockApi';
+import firebase from '../../app/config/firebase';
 
 export const createEvent = event => (
   async (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -25,12 +25,13 @@ export const createEvent = event => (
         'events',
         newEvent,
       );
+
       await firestore.set(
         `event_attendee/${createdEvent.id}_${user.uid}`,
         {
           eventId: createdEvent.id,
           userUid: user.uid,
-          eventDate: event.date,
+          eventDate: newEvent.date,
           host: true,
         },
       );
@@ -66,22 +67,6 @@ export const cancelToggle = (cancelled, eventId) => (
   }
 );
 
-export const deleteEvent = eventId => (
-  {
-    type: DELETE_EVENT,
-    payload: {
-      eventId,
-    },
-  }
-);
-
-export const fetchEvents = events => (
-  {
-    type: FETCH_EVENTS,
-    payload: events,
-  }
-);
-
 export const updateEvent = event => (
   async (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore();
@@ -110,16 +95,66 @@ export const updateEvent = event => (
   }
 );
 
-export const loadEvents = () => {
-  return async dispatch => {
+const returnEvent = (data, id) => (
+  {
+    ...data,
+    id,
+  }
+);
+
+export const getEventsForDashboard = lastEvent => (
+  async (dispatch, getState) => {
     try {
       dispatch(asyncActionStart());
-      const events = await fetchSampleData();
-      dispatch(fetchEvents(events));
+
+      const today = new Date(Date.now());
+      const firestore = firebase.firestore();
+      const eventsRef = firestore.collection('events');
+      const startAfter = lastEvent && await firestore.collection('events').doc(lastEvent.id).get();
+
+      let query;
+
+      if (lastEvent) {
+        query = eventsRef
+          .where('date', '>=', today)
+          .orderBy('date')
+          .startAfter(startAfter)
+          .limit(2);
+      } else {
+        query = eventsRef
+          .where('date', '>=', today)
+          .orderBy('date')
+          .limit(2);
+      }
+
+      const querySnap = await query.get();
+
+      if (querySnap.docs.length === 0) {
+        dispatch(asyncActionFinish());
+        return querySnap;
+      }
+
+      const events = [];
+      let event = {};
+
+      for (let i = 0; i < querySnap.docs.length; i += 1) {
+        event = returnEvent(
+          querySnap.docs[i].data(),
+          querySnap.docs[i].id,
+        );
+
+        events.push(event);
+      }
+
+      dispatch({
+        type: FETCH_EVENTS,
+        payload: { events },
+      });
       dispatch(asyncActionFinish());
+      return querySnap;
     } catch (error) {
       console.error(error);
       dispatch(asyncActionError());
     }
   }
-};
+);

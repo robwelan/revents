@@ -118,7 +118,6 @@ EventListItem.defaultProps = {
 };
 
 EventListItem.propTypes = {
-  deleteEvent: PropTypes.func.isRequired,
   event: PropTypes.shape(),
 };
 

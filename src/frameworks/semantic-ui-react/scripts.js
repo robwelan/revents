@@ -30,6 +30,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Dimmer from 'semantic-ui-react/dist/commonjs/modules/Dimmer';
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown';
 import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal';
+import Tab from 'semantic-ui-react/dist/commonjs/modules/Tab';
 
 // Views
 import Card from 'semantic-ui-react/dist/commonjs/views/Card/Card'
@@ -78,4 +79,5 @@ export {
   Modal,
   Select,
   Segment,
+  Tab,
 };
