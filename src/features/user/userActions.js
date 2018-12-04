@@ -222,10 +222,10 @@ export const cancelGoingToEvent = event => (
   }
 );
 
-const returnEvent = async (firestore, docs, i) => {
+const returnEvent = async (firestore, docs) => {
   const event = await firestore
     .collection('events')
-    .doc(docs[i].data().eventId)
+    .doc(docs.data().eventId)
     .get();
 
   return (
@@ -234,6 +234,14 @@ const returnEvent = async (firestore, docs, i) => {
       id: event.id,
     }
   );
+};
+
+const returnEvents = async (firestore, querySnap) => {
+  const events = querySnap.docs.map(event => (
+    returnEvent(firestore, event)
+  ));
+
+  return await Promise.all(events) || null;
 };
 
 export const getUserEvents = (userUid, activeTab) => (
@@ -270,25 +278,12 @@ export const getUserEvents = (userUid, activeTab) => (
             .orderBy('eventDate', 'desc');
       }
       const querySnap = await query.get();
-      const events = [];
-      let event = {};
+      const payloadEvents = await returnEvents(firestore, querySnap);
 
-      for (let i = 0; i < querySnap.docs.length; i += 1) {
-        // event = await firestore
-        //   .collection('events')
-        //   .doc(querySnap.docs[i].data().eventId)
-        //   .get();
-        event = await returnEvent(firestore, querySnap.docs, i);
-
-        events.push({
-          ...event,
-        });
-      }
-
-      const payloadEvents = await Promise.all(events);
-      //console.log('pL', payloadEvents)
-      dispatch({ type: FETCH_EVENTS, payload: { events } });
-      dispatch(asyncActionFinish());
+      await Promise.all(payloadEvents).then((events) => {
+        dispatch({ type: FETCH_EVENTS, payload: { events } });
+        dispatch(asyncActionFinish());
+      });
     } catch (error) {
       console.error(error);
       dispatch(asyncActionError());
