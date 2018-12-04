@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -40,30 +41,41 @@ const UserDetailedEvents = (props) => {
       <br />
       <Card.Group itemsPerRow={5}>
         {
-          events && events.map((event) => {
-            return (
-              <Card
-                as={Link}
-                key={event.id}
-                to={`/event/${event.id}`}
-              >
-                <Image src={`/assets/categoryImages/${event.category}.jpg`} />
-                <Card.Content>
-                  <Card.Header textAlign="center">
-                    {event.title}
-                  </Card.Header>
-                  <Card.Meta textAlign="center">
-                    <div>{format(event.date && event.date.toDate(), 'DD MMM YYYY')}</div>
-                    <div>{format(event.date && event.date.toDate(), 'h:mm A')}</div>
-                  </Card.Meta>
-                </Card.Content>
-              </Card>
-            )
-          })
+          events && events.map(event => (
+            <Card
+              as={Link}
+              key={event.id}
+              to={`/event/${event.id}`}
+            >
+              <Image src={`/assets/categoryImages/${event.category}.jpg`} />
+              <Card.Content>
+                <Card.Header textAlign="center">
+                  {event.title}
+                </Card.Header>
+                <Card.Meta textAlign="center">
+                  <div>{format(event.date && event.date.toDate(), 'DD MMM YYYY')}</div>
+                  <div>{format(event.date && event.date.toDate(), 'h:mm A')}</div>
+                </Card.Meta>
+              </Card.Content>
+            </Card>
+          ))
         }
       </Card.Group>
     </Segment>
   );
+};
+
+UserDetailedEvents.defaultProps = {
+  events: [],
+  eventsLoading: false,
+};
+
+UserDetailedEvents.propTypes = {
+  events: PropTypes.arrayOf(
+    PropTypes.shape(),
+  ),
+  eventsLoading: PropTypes.bool,
+  changeTab: PropTypes.func.isRequired,
 };
 
 export default UserDetailedEvents;
