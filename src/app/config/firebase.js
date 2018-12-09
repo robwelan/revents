@@ -4,11 +4,11 @@
 */
 import firebase from 'firebase/app';
 import 'firebase/auth';
-// import 'firebase/database';
+import 'firebase/database';
 import 'firebase/firestore';
-// import 'firebase/functions';
-// import 'firebase/storage';
-// import 'firebase/messaging';
+import 'firebase/functions';
+import 'firebase/storage';
+import 'firebase/messaging';
 
 /* the maximal way */
 // import * as firebase from 'firebase';

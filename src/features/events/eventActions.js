@@ -158,3 +158,29 @@ export const getEventsForDashboard = lastEvent => (
     }
   }
 );
+
+export const addEventComment = (eventId, parentId, values) => (
+  async (dispatch, getState, { getFirebase }) => {
+    const pFirebase = getFirebase();
+    const { profile } = getState().firebase;
+    const user = pFirebase.auth().currentUser;
+    const newComment = {
+      date: Date.now(),
+      displayName: profile.displayName,
+      parentId,
+      photoURL: profile.photoURL || '/assets/user.png',
+      text: values.comment,
+      uid: user.uid,
+    };
+
+    try {
+      await pFirebase.push(
+        `event_chat/${eventId}`,
+        newComment,
+      );
+    } catch (error) {
+      console.error(error);
+      toastr.error('Oops', 'Problem adding comments.');
+    }
+  }
+);
