@@ -12,7 +12,7 @@ import Menu from 'semantic-ui-react/dist/commonjs//collections/Menu';
 // Elements
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button';
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
-import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
+import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header';
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
@@ -30,10 +30,12 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Dimmer from 'semantic-ui-react/dist/commonjs/modules/Dimmer';
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown';
 import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal';
+import Sticky from 'semantic-ui-react/dist/commonjs/modules/Sticky';
 import Tab from 'semantic-ui-react/dist/commonjs/modules/Tab';
 
 // Views
-import Card from 'semantic-ui-react/dist/commonjs/views/Card/Card'
+import Card from 'semantic-ui-react/dist/commonjs/views/Card/Card';
+import Feed from 'semantic-ui-react/dist/commonjs/views/Feed';
 import Comment from 'semantic-ui-react/dist/commonjs/views/Comment';
 import Item from 'semantic-ui-react/dist/commonjs/views/Item';
 // import ItemContent from 'semantic-ui-react/dist/commonjs/views/Item/ItemContent';
@@ -60,6 +62,7 @@ export {
   Dimmer,
   Divider,
   Dropdown,
+  Feed,
   Form,
   // FormField,
   Grid,
@@ -79,5 +82,6 @@ export {
   Modal,
   Select,
   Segment,
+  Sticky,
   Tab,
 };

@@ -53,11 +53,6 @@ class UserDetailedPage extends Component {
     this.changeTab = this.changeTab.bind(this);
   }
 
-  async componentDidMount() {
-    const { doGetUserEvents, userUid } = this.props;
-    const events = doGetUserEvents(userUid);
-  }
-
   changeTab(e, data) {
     const { activeIndex } = data;
     const {

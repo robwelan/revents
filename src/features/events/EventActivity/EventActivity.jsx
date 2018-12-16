@@ -1,22 +1,37 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { Header, Segment } from '../../../frameworks/semantic-ui-react/scripts';
+import EventActivityItem from './EventActivityItem';
+import {
+  Feed,
+  Header,
+  Segment,
+  Sticky,
+} from '../../../frameworks/semantic-ui-react/scripts';
 
-const EventActivity = () => {
+const EventActivity = (props) => {
+  const { activities, contextRef } = props;
+
   return (
-    <React.Fragment>
-      <Header
-        attached="top"
-        content="recent activity"
-      />
-      <Segment
-        attached
-      >
-        <p>
-          Recent Activity
-        </p>
+    <Sticky context={contextRef} offset={100}>
+      <Header attached="top" content="recent activity" />
+      <Segment attached>
+        <Feed>
+          {activities
+            && activities.map(activity => (
+              <EventActivityItem key={activity.id} activity={activity} />
+            ))}
+        </Feed>
       </Segment>
-    </React.Fragment>
+    </Sticky>
   );
+};
+
+EventActivity.defaultProps = {
+  activities: [],
+};
+
+EventActivity.propTypes = {
+  activities: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 export default EventActivity;

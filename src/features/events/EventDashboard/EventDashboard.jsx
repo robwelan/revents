@@ -1,16 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  firestoreConnect,
-} from 'react-redux-firebase';
-import {
-  Grid,
-  Loader,
-} from '../../../frameworks/semantic-ui-react/scripts';
+import { firestoreConnect } from 'react-redux-firebase';
+import { Grid, Loader } from '../../../frameworks/semantic-ui-react/scripts';
 import EventList from '../EventList/EventList';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
-import RecentActivity from '../EventActivity/EventActivity';
+import EventActivity from '../EventActivity/EventActivity';
 import { getEventsForDashboard } from '../eventActions';
 
 const actions = {
@@ -20,19 +15,30 @@ const actions = {
 const mapState = state => ({
   events: state.events,
   loading: state.async.loading,
+  activities: state.firestore.ordered.activity,
 });
+
+const query = [
+  {
+    collection: 'activity',
+    orderBy: ['timestamp', 'desc'],
+    limit: 5,
+  },
+];
 
 class EventDashboard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      moreEvents: false,
+      contextRef: {},
       loadedEvents: [],
       loadingInitial: true,
+      moreEvents: false,
     };
 
     this.getNextEvents = this.getNextEvents.bind(this);
+    this.handleContextRef = this.handleContextRef.bind(this);
   }
 
   async componentDidMount() {
@@ -68,10 +74,7 @@ class EventDashboard extends Component {
 
     if (events !== nextEvents) {
       this.setState({
-        loadedEvents: [
-          ...loadedEvents,
-          ...nextEvents,
-        ],
+        loadedEvents: [...loadedEvents, ...nextEvents],
       });
     }
   }
@@ -92,34 +95,37 @@ class EventDashboard extends Component {
     }
   }
 
+  handleContextRef(contextRef) {
+    this.setState({ contextRef });
+  }
+
   render() {
-    const { loading } = this.props;
+    const { loading, activities } = this.props;
     const {
+      contextRef,
       loadedEvents,
       loadingInitial,
       moreEvents,
     } = this.state;
 
     if (loadingInitial) {
-      return (
-        <LoadingComponent
-          inverted
-        />
-      );
+      return <LoadingComponent inverted />;
     }
 
     return (
       <Grid>
         <Grid.Column width={10}>
-          <EventList
-            events={loadedEvents}
-            getNextEvents={this.getNextEvents}
-            loading={loading}
-            moreEvents={moreEvents}
-          />
+          <div ref={this.handleContextRef}>
+            <EventList
+              events={loadedEvents}
+              getNextEvents={this.getNextEvents}
+              loading={loading}
+              moreEvents={moreEvents}
+            />
+          </div>
         </Grid.Column>
         <Grid.Column width={6}>
-          <RecentActivity />
+          <EventActivity activities={activities} contextRef={contextRef} />
         </Grid.Column>
         <Grid.Column width={10}>
           <Loader active={loading} />
@@ -131,18 +137,17 @@ class EventDashboard extends Component {
 }
 
 EventDashboard.defaultProps = {
+  activities: [],
   events: [],
 };
 
 EventDashboard.propTypes = {
-  events: PropTypes.arrayOf(
-    PropTypes.shape(),
-  ),
+  activities: PropTypes.arrayOf(PropTypes.shape()),
+  events: PropTypes.arrayOf(PropTypes.shape()),
   loading: PropTypes.bool.isRequired,
 };
 
-export default connect(mapState, actions)(
-  firestoreConnect(
-    [{ collection: 'events' }],
-  )(EventDashboard),
-);
+export default connect(
+  mapState,
+  actions,
+)(firestoreConnect(query)(EventDashboard));

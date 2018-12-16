@@ -3,20 +3,15 @@
   "env": {
     "browser": true
   },
-  "plugins": [
-    "react",
-    "jsx-a11y",
-    "import"
-  ],
+  "plugins": ["react", "jsx-a11y", "import"],
   "rules": {
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
+        "extensions": [".js", ".jsx"]
       }
-    ]
+    ],
+    "linebreak-style": 0,
+    "max-len": "off"
   }
 }
