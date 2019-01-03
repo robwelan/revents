@@ -49,76 +49,56 @@ class NavBar extends Component {
   }
 
   render() {
-    const {
-      auth,
-      profile,
-    } = this.props;
+    const { auth, profile } = this.props;
     const authenticated = auth.isLoaded && !auth.isEmpty;
 
     return (
       <Menu inverted fixed="top">
         <Container>
-          <Menu.Item
-            as={Link}
-            to="/"
-            header
-          >
-            <img
-              alt="logo"
-              src="/assets/logo.png"
-            />
-            Re-vents
+          <Menu.Item as={Link} to="/" header>
+            <img alt="logo" src="/assets/logo.png" />
+            {'Re-vents'}
           </Menu.Item>
-          <Menu.Item
-            as={NavLink}
-            name="Events"
-            to="/events"
-          />
-          <Menu.Item
-            as={NavLink}
-            name="Test"
-            to="/test"
-          />
-          {authenticated
-            && (
-              <React.Fragment>
-                <Menu.Item
-                  as={NavLink}
-                  name="People"
-                  to="/people"
+          <Menu.Item as={NavLink} name="Events" to="/events" />
+          <Menu.Item as={NavLink} name="Test" to="/test" />
+          {authenticated && (
+            <React.Fragment>
+              <Menu.Item as={NavLink} name="People" to="/people" />
+              <Menu.Item>
+                <Button
+                  as={Link}
+                  content="Create Event"
+                  floated="right"
+                  inverted
+                  positive
+                  to="/createEvent"
                 />
-                <Menu.Item>
-                  <Button
-                    as={Link}
-                    content="Create Event"
-                    floated="right"
-                    inverted
-                    positive
-                    to="/createEvent"
-                  />
-                </Menu.Item>
-              </React.Fragment>
-            )
-          }
-          {authenticated
-            ? (
-              <SignedInMenu
-                auth={auth}
-                profile={profile}
-                signOut={this.handleSignOut}
-              />
-            )
-            : (
-              <SignedOutMenu
-                register={this.handleRegister}
-                signIn={this.handleSignIn}
-              />
-            )
-          }
+              </Menu.Item>
+            </React.Fragment>
+          )}
+          {authenticated ? (
+            <SignedInMenu
+              auth={auth}
+              profile={profile}
+              signOut={this.handleSignOut}
+            />
+          ) : (
+            <SignedOutMenu
+              register={this.handleRegister}
+              signIn={this.handleSignIn}
+            />
+          )}
         </Container>
       </Menu>
     );
   }
 }
 
-export default withRouter(withFirebase(connect(mapState, actions)(NavBar)));
+export default withRouter(
+  withFirebase(
+    connect(
+      mapState,
+      actions,
+    )(NavBar),
+  ),
+);

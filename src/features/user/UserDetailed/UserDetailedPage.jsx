@@ -15,10 +15,12 @@ import UserDetailedPhotos from './UserDetailedPhotos';
 import UserDetailedSidebar from './UserDetailedSidebar';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { userDetailedQuery } from '../userQueries';
-import { getUserEvents } from '../userActions';
+import { followUser, getUserEvents, unfollowUser } from '../userActions';
 
 const actions = {
   doGetUserEvents: getUserEvents,
+  doFollowUser: followUser,
+  doUnfollowUser: unfollowUser,
 };
 
 const mapState = (state, ownProps) => {
@@ -38,6 +40,7 @@ const mapState = (state, ownProps) => {
     auth: state.firebase.auth,
     events: state.events,
     eventsLoading: state.async.loading,
+    following: state.firestore.ordered.following,
     photos: state.firestore.ordered.photos,
     profile,
     requesting: state.firestore.status.requesting,
@@ -68,12 +71,16 @@ class UserDetailedPage extends Component {
       auth,
       eventsLoading,
       events,
+      following,
+      doFollowUser,
+      doUnfollowUser,
       match,
       photos,
       profile,
       requesting,
     } = this.props;
     const isCurrentUser = auth.uid === match.params.id;
+    const isFollowing = !isEmpty(following);
     const loading = Object.values(requesting).some(a => a === true);
 
     if (loading) return <LoadingComponent inverted />;
@@ -104,7 +111,11 @@ class UserDetailedPage extends Component {
         </Grid.Column>
         <Grid.Column width={4}>
           <UserDetailedSidebar
+            followUser={doFollowUser}
             isCurrentUser={isCurrentUser}
+            isFollowing={isFollowing}
+            profile={profile}
+            unfollowUser={doUnfollowUser}
           />
         </Grid.Column>
 
@@ -134,6 +145,7 @@ UserDetailedPage.defaultProps = {
   auth: {},
   events: [],
   eventsLoading: false,
+  following: [],
   match: {},
   photos: [],
   profile: false || {},
@@ -144,10 +156,15 @@ UserDetailedPage.defaultProps = {
 UserDetailedPage.propTypes = {
   auth: PropTypes.shape(),
   doGetUserEvents: PropTypes.func.isRequired,
+  doFollowUser: PropTypes.func.isRequired,
+  doUnfollowUser: PropTypes.func.isRequired,
   events: PropTypes.arrayOf(
     PropTypes.shape(),
   ),
   eventsLoading: PropTypes.bool,
+  following: PropTypes.arrayOf(
+    PropTypes.shape(),
+  ),
   match: PropTypes.shape(),
   photos: PropTypes.arrayOf(
     PropTypes.shape(),
@@ -162,5 +179,5 @@ UserDetailedPage.propTypes = {
 
 export default compose(
   connect(mapState, actions),
-  firestoreConnect((auth, userUid) => userDetailedQuery(auth, userUid)),
+  firestoreConnect((auth, userUid, match) => userDetailedQuery(auth, userUid, match)),
 )(UserDetailedPage);
