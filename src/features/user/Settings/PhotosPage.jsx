@@ -15,11 +15,7 @@ import {
   Header,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
-import {
-  deletePhoto,
-  setMainPhoto,
-  uploadProfileImage,
-} from '../userActions';
+import { deletePhoto, setMainPhoto, uploadProfileImage } from '../userActions';
 import '../../../../node_modules/cropperjs/dist/cropper.css';
 
 const actions = {
@@ -136,21 +132,12 @@ class PhotosPage extends Component {
   }
 
   render() {
-    const {
-      cropResult,
-      files,
-    } = this.state;
-    const {
-      loading,
-      photos,
-      profile,
-    } = this.props;
+    const { cropResult, files } = this.state;
+    const { loading, photos, profile } = this.props;
 
     let filteredPhotos;
     if (photos) {
-      filteredPhotos = photos.filter(photo => (
-        photo.url !== profile.photoURL
-      ));
+      filteredPhotos = photos.filter(photo => photo.url !== profile.photoURL);
     }
 
     return (
@@ -160,10 +147,7 @@ class PhotosPage extends Component {
           <Grid.Row />
           <Grid.Column width={4}>
             <Header color="teal" sub content="Step 1 - Add Photo" />
-            <Dropzone
-              multiple={false}
-              onDrop={this.onDrop}
-            >
+            <Dropzone multiple={false} onDrop={this.onDrop}>
               <div style={{ padding: '30px', textAlign: 'center' }}>
                 <Icon name="upload" size="huge" />
                 <Header content="Drop image here or click to add." />
@@ -173,54 +157,49 @@ class PhotosPage extends Component {
           <Grid.Column width={1} />
           <Grid.Column width={4}>
             <Header sub color="teal" content="Step 2 - Resize image" />
-            {files[0]
-              && (
-                <Cropper
-                  aspectRatio={1}
-                  crop={this.cropImage}
-                  cropBoxMovable={true}
-                  cropBoxResizable={true}
-                  dragMode="move"
-                  guides={false}
-                  ref={this.refCropper}
-                  scalable={true}
-                  src={files[0].preview}
-                  style={{ height: 200, width: '100%' }}
-                  viewMode={0}
-                />
-              )
-            }
+            {files[0] && (
+              <Cropper
+                aspectRatio={1}
+                crop={this.cropImage}
+                cropBoxMovable
+                cropBoxResizable
+                dragMode="move"
+                guides={false}
+                ref={this.refCropper}
+                scalable
+                src={files[0].preview}
+                style={{ height: 200, width: '100%' }}
+                viewMode={0}
+              />
+            )}
           </Grid.Column>
           <Grid.Column width={1} />
           <Grid.Column width={4}>
             <Header sub color="teal" content="Step 3 - Preview and Upload" />
-            {files[0]
-              && (
-                <div>
-                  <Image
-                    src={cropResult}
-                    style={{ minHeight: '200px', minWidth: '200px' }}
+            {files[0] && (
+              <div>
+                <Image
+                  src={cropResult}
+                  style={{ minHeight: '200px', minWidth: '200px' }}
+                />
+                <Button.Group>
+                  <Button
+                    icon="check"
+                    loading={loading}
+                    onClick={this.uploadImage}
+                    positive
+                    style={{ width: '100px' }}
                   />
-                  <Button.Group>
-                    <Button
-                      icon="check"
-                      loading={loading}
-                      onClick={this.uploadImage}
-                      positive
-                      style={{ width: '100px' }}
-                    />
-                    <Button
-                      disabled={loading}
-                      icon="close"
-                      onClick={this.cancelCrop}
-                      style={{ width: '100px' }}
-                    />
-                  </Button.Group>
-                </div>
-              )
-            }
+                  <Button
+                    disabled={loading}
+                    icon="close"
+                    onClick={this.cancelCrop}
+                    style={{ width: '100px' }}
+                  />
+                </Button.Group>
+              </div>
+            )}
           </Grid.Column>
-
         </Grid>
 
         <Divider />
@@ -232,33 +211,28 @@ class PhotosPage extends Component {
             <Button positive>Main Photo</Button>
           </Card>
 
-          {
-            photos
-            && (
-              filteredPhotos.map(photo => (
-                <Card key={photo.id}>
-                  <Image
-                    src={photo.url}
+          {photos
+            && filteredPhotos.map(photo => (
+              <Card key={photo.id}>
+                <Image src={photo.url} />
+                <div className="ui two buttons">
+                  <Button
+                    basic
+                    color="green"
+                    loading={loading}
+                    onClick={this.handleSetMainPhoto(photo)}
+                  >
+                    {'Main'}
+                  </Button>
+                  <Button
+                    basic
+                    icon="trash"
+                    color="red"
+                    onClick={this.handlePhotoDelete(photo)}
                   />
-                  <div className="ui two buttons">
-                    <Button
-                      basic
-                      color="green"
-                      onClick={this.handleSetMainPhoto(photo)}
-                    >
-                      Main
-                    </Button>
-                    <Button
-                      basic
-                      icon="trash"
-                      color="red"
-                      onClick={this.handlePhotoDelete(photo)}
-                    />
-                  </div>
-                </Card>
-              ))
-            )
-          }
+                </div>
+              </Card>
+            ))}
         </Card.Group>
       </Segment>
     );
@@ -266,6 +240,9 @@ class PhotosPage extends Component {
 }
 
 export default compose(
-  connect(mapState, actions),
+  connect(
+    mapState,
+    actions,
+  ),
   firestoreConnect(auth => query(auth)),
 )(PhotosPage);

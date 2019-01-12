@@ -26,10 +26,11 @@ const eventImageTextStyle = {
 const EventDetailedHeader = (props) => {
   const {
     cancelGoingToEvent,
+    event,
     goingToEvent,
     isGoing,
     isHost,
-    event,
+    loading,
   } = props;
   let eventDate;
 
@@ -46,10 +47,7 @@ const EventDetailedHeader = (props) => {
           style={eventImageStyle}
         />
 
-        <Segment
-          basic
-          style={eventImageTextStyle}
-        >
+        <Segment basic style={eventImageTextStyle}>
           <Item.Group>
             <Item>
               <Item.Content>
@@ -60,11 +58,8 @@ const EventDetailedHeader = (props) => {
                 />
                 <p>{eventDate}</p>
                 <p>
-                  Hosted by
-                  {' '}
-                  <strong>
-                    {event.hostedBy}
-                  </strong>
+                  {'Hosted by'}
+                  <strong>{event.hostedBy}</strong>
                 </p>
               </Item.Content>
             </Item>
@@ -73,43 +68,29 @@ const EventDetailedHeader = (props) => {
       </Segment>
 
       <Segment attached="bottom">
-        {
-          !isHost
-          && (
-            <React.Fragment>
-              {
-                isGoing
-                  ? (
-                    <Button
-                      onClick={() => cancelGoingToEvent(event)}
-                    >
-                      Cancel My Place
-                    </Button>
-                  ) : (
-                    <Button
-                      color="teal"
-                      onClick={() => goingToEvent(event)}
-                    >
-                      JOIN THIS EVENT
-                    </Button>
-                  )
-              }
-            </React.Fragment>
-          )
-        }
+        {!isHost && (
+          <React.Fragment>
+            {isGoing ? (
+              <Button onClick={() => cancelGoingToEvent(event)}>
+                {'Cancel My Place'}
+              </Button>
+            ) : (
+              <Button
+                color="teal"
+                loading={loading}
+                onClick={() => goingToEvent(event)}
+              >
+                {'JOIN THIS EVENT'}
+              </Button>
+            )}
+          </React.Fragment>
+        )}
 
-        {
-          isHost
-          && (
-            <Button
-              as={Link}
-              color="orange"
-              to={`/manage/${event.id}`}
-            >
-              Manage Event
-            </Button>
-          )
-        }
+        {isHost && (
+          <Button as={Link} color="orange" to={`/manage/${event.id}`}>
+            {'Manage Event'}
+          </Button>
+        )}
       </Segment>
     </Segment.Group>
   );
@@ -127,6 +108,7 @@ EventDetailedHeader.propTypes = {
   isGoing: PropTypes.bool,
   isHost: PropTypes.bool,
   event: PropTypes.shape(),
+  loading: PropTypes.bool.isRequired,
 };
 
 export default EventDetailedHeader;

@@ -44,6 +44,7 @@ const mapState = (state, ownProps) => {
     auth: state.firebase.auth,
     event,
     eventChat,
+    loading: state.async.loading,
   };
 };
 
@@ -74,6 +75,7 @@ class EventDetailedPage extends React.Component {
       doGoingToEvent,
       event,
       eventChat,
+      loading,
     } = this.props;
     const attendees = event
       && event.attendees
@@ -95,6 +97,7 @@ class EventDetailedPage extends React.Component {
             isGoing={isGoing}
             isHost={isHost}
             event={event}
+            loading={loading}
           />
           <EventDetailedInfo event={event} />
           <EventDetailedChat
@@ -119,13 +122,14 @@ EventDetailedPage.defaultProps = {
 
 EventDetailedPage.propTypes = {
   auth: PropTypes.shape(),
+  doAddEventComment: PropTypes.func.isRequired,
+  doCancelGoingToEvent: PropTypes.func.isRequired,
+  doGoingToEvent: PropTypes.func.isRequired,
   event: PropTypes.shape(),
   eventChat: PropTypes.arrayOf(
     PropTypes.shape(),
   ),
-  doAddEventComment: PropTypes.func.isRequired,
-  doCancelGoingToEvent: PropTypes.func.isRequired,
-  doGoingToEvent: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default compose(

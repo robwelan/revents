@@ -44,23 +44,24 @@ const category = [
 const mapState = (state, ownProps) => {
   let event = {};
 
-  if (
-    state.firestore.ordered.events
-    && state.firestore.ordered.events[0]
-  ) {
+  if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
     /* destructuring does not match this use case very well */
     /* eslint-disable */
     event = state.firestore.ordered.events[0];
 
     if (state.firestore.ordered.events.length > 0) {
       const { id } = ownProps.match.params;
-      event = Object.assign({}, state.firestore.ordered.events.filter(evt => evt.id === id)[0]);
+      event = Object.assign(
+        {},
+        state.firestore.ordered.events.filter(evt => evt.id === id)[0],
+      );
     }
   }
 
   return {
     initialValues: event,
     event,
+    loading: state.async.loading,
   };
 };
 
@@ -70,7 +71,9 @@ const validate = combineValidators({
   date: isRequired('date'),
   description: composeValidators(
     isRequired({ message: 'Please enter a description.' }),
-    hasLengthGreaterThan(4)({ message: 'The description must be at least five characters.' }),
+    hasLengthGreaterThan(4)({
+      message: 'The description must be at least five characters.',
+    }),
   )(),
   title: isRequired({ message: 'The event title is required.' }),
   venue: isRequired('venue'),
@@ -107,7 +110,7 @@ class EventForm extends Component {
     await firestore.unsetListener(`events/${id}`);
   }
 
-  onFormSubmit(values) {
+  async onFormSubmit(values) {
     const {
       doCreateEvent,
       doUpdateEvent,
@@ -126,7 +129,7 @@ class EventForm extends Component {
       if (Object.keys(newValues.venueLatLng).length === 0) {
         newValues.venueLatLng = event.venueLatLng;
       }
-      doUpdateEvent(newValues);
+      await doUpdateEvent(newValues);
       history.goBack();
     } else {
       doCreateEvent(newValues);
@@ -167,6 +170,7 @@ class EventForm extends Component {
       handleSubmit,
       history,
       invalid,
+      loading,
       pristine,
       submitting,
     } = this.props;
@@ -175,16 +179,14 @@ class EventForm extends Component {
     return (
       <Grid>
         <Script
-          url={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API}&libraries=places`}
+          url={`https://maps.googleapis.com/maps/api/js?key=${
+            process.env.REACT_APP_GOOGLE_MAPS_API
+          }&libraries=places`}
           onLoad={this.handleScriptLoaded}
         />
         <Grid.Column width={10}>
           <Segment>
-            <Header
-              color="teal"
-              content="Event Details"
-              sub
-            />
+            <Header color="teal" content="Event Details" sub />
             <Form onSubmit={handleSubmit(this.onFormSubmit)}>
               <Field
                 component={TextInput}
@@ -205,37 +207,31 @@ class EventForm extends Component {
                 placeholder="Tell us about your event"
                 rows={3}
               />
-              <Header
-                color="teal"
-                content="Event Location Details"
-                sub
-              />
-              {scriptLoaded
-                && (
-                  <React.Fragment>
-                    <Field
-                      component={PlaceInput}
-                      name="city"
-                      onSelect={this.handleCitySelect}
-                      options={{ types: ['(cities)'] }}
-                      placeholder="Event city"
-                      type="text"
-                    />
-                    <Field
-                      component={PlaceInput}
-                      name="venue"
-                      onSelect={this.handleVenueSelect}
-                      options={{
-                        location: new google.maps.LatLng(cityLatLng),
-                        radius: 1000,
-                        types: ['establishment'],
-                      }}
-                      placeholder="Event venue"
-                      type="text"
-                    />
-                  </React.Fragment>
-                )
-              }
+              <Header color="teal" content="Event Location Details" sub />
+              {scriptLoaded && (
+                <React.Fragment>
+                  <Field
+                    component={PlaceInput}
+                    name="city"
+                    onSelect={this.handleCitySelect}
+                    options={{ types: ['(cities)'] }}
+                    placeholder="Event city"
+                    type="text"
+                  />
+                  <Field
+                    component={PlaceInput}
+                    name="venue"
+                    onSelect={this.handleVenueSelect}
+                    options={{
+                      location: new google.maps.LatLng(cityLatLng),
+                      radius: 1000,
+                      types: ['establishment'],
+                    }}
+                    placeholder="Event venue"
+                    type="text"
+                  />
+                </React.Fragment>
+              )}
               <Field
                 component={DateInput}
                 dateFormat="YYYY-MM-DD HH:mm"
@@ -247,30 +243,22 @@ class EventForm extends Component {
               />
               <Button
                 disabled={invalid || pristine || submitting}
+                loading={loading}
                 positive
                 type="submit"
               >
                 Submit
               </Button>
-              <Button
-                onClick={history.goBack}
-                type="button"
-              >
+              <Button disabled={loading} onClick={history.goBack} type="button">
                 Cancel
-               </Button>
+              </Button>
               <Button
                 color={event.cancelled ? 'green' : 'red'}
                 floated="right"
                 onClick={() => doCancelToggle(!event.cancelled, event.id)}
                 type="button"
               >
-                {
-                  event.cancelled
-                    ?
-                    'Reactivate Event'
-                    :
-                    'Cancel Event'
-                }
+                {event.cancelled ? 'Reactivate Event' : 'Cancel Event'}
               </Button>
             </Form>
           </Segment>
@@ -294,13 +282,14 @@ EventForm.propTypes = {
 };
 
 export default withFirestore(
-  connect(mapState, actions)(
-    reduxForm(
-      {
-        form: 'eventForm',
-        enableReinitialize: true,
-        validate,
-      },
-    )(EventForm),
+  connect(
+    mapState,
+    actions,
+  )(
+    reduxForm({
+      form: 'eventForm',
+      enableReinitialize: true,
+      validate,
+    })(EventForm),
   ),
 );
