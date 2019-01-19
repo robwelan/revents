@@ -77,7 +77,7 @@ const EventDetailedHeader = (props) => {
                 {'Cancel My Place'}
               </Button>
             )}
-            {isGoing && isAuthenticated && (
+            {!isGoing && isAuthenticated && (
               <Button
                 color="teal"
                 loading={loading}
