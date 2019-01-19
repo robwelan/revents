@@ -15,11 +15,13 @@ import {
 } from '../../../app/common/util/helpers';
 import { cancelGoingToEvent, goingToEvent } from '../../user/userActions';
 import { addEventComment } from '../eventActions';
+import { openModal } from '../../modals/modalActions';
 
 const actions = {
   doAddEventComment: addEventComment,
   doCancelGoingToEvent: cancelGoingToEvent,
   doGoingToEvent: goingToEvent,
+  doOpenModal: openModal,
 };
 
 const mapState = (state, ownProps) => {
@@ -73,6 +75,7 @@ class EventDetailedPage extends React.Component {
       doAddEventComment,
       doCancelGoingToEvent,
       doGoingToEvent,
+      doOpenModal,
       event,
       eventChat,
       loading,
@@ -86,7 +89,7 @@ class EventDetailedPage extends React.Component {
     );
     const chatTree = !isEmpty(eventChat)
       ? createDataTree(eventChat) : [];
-
+    const isAuthenticated = auth.isLoaded && !auth.isEmpty;
 
     return (
       <Grid>
@@ -94,17 +97,24 @@ class EventDetailedPage extends React.Component {
           <EventDetailedHeader
             cancelGoingToEvent={doCancelGoingToEvent}
             goingToEvent={doGoingToEvent}
+            isAuthenticated={isAuthenticated}
             isGoing={isGoing}
             isHost={isHost}
             event={event}
             loading={loading}
+            openModal={doOpenModal}
           />
           <EventDetailedInfo event={event} />
-          <EventDetailedChat
-            addEventComment={doAddEventComment}
-            eventChat={chatTree}
-            eventId={event.id}
-          />
+          {
+            isAuthenticated
+            && (
+              <EventDetailedChat
+                addEventComment={doAddEventComment}
+                eventChat={chatTree}
+                eventId={event.id}
+              />
+            )
+          }
         </Grid.Column>
         <Grid.Column width={6}>
           <EventDetailedSidebar attendees={attendees} />
@@ -125,6 +135,7 @@ EventDetailedPage.propTypes = {
   doAddEventComment: PropTypes.func.isRequired,
   doCancelGoingToEvent: PropTypes.func.isRequired,
   doGoingToEvent: PropTypes.func.isRequired,
+  doOpenModal: PropTypes.func.isRequired,
   event: PropTypes.shape(),
   eventChat: PropTypes.arrayOf(
     PropTypes.shape(),

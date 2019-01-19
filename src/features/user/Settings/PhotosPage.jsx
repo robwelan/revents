@@ -110,8 +110,9 @@ class PhotosPage extends Component {
 
     return async () => {
       try {
-        doSetMainPhoto(photo);
+        await doSetMainPhoto(photo);
       } catch (error) {
+        console.error(error);
         toastr.error('Oops', error.message);
       }
     };

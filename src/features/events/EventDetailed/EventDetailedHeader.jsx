@@ -28,9 +28,11 @@ const EventDetailedHeader = (props) => {
     cancelGoingToEvent,
     event,
     goingToEvent,
+    isAuthenticated,
     isGoing,
     isHost,
     loading,
+    openModal,
   } = props;
   let eventDate;
 
@@ -70,15 +72,25 @@ const EventDetailedHeader = (props) => {
       <Segment attached="bottom">
         {!isHost && (
           <React.Fragment>
-            {isGoing ? (
+            {isGoing && (
               <Button onClick={() => cancelGoingToEvent(event)}>
                 {'Cancel My Place'}
               </Button>
-            ) : (
+            )}
+            {isGoing && isAuthenticated && (
               <Button
                 color="teal"
                 loading={loading}
                 onClick={() => goingToEvent(event)}
+              >
+                {'JOIN THIS EVENT'}
+              </Button>
+            )}
+            {!isAuthenticated && (
+              <Button
+                color="teal"
+                loading={loading}
+                onClick={() => openModal('UnauthModal')}
               >
                 {'JOIN THIS EVENT'}
               </Button>
@@ -97,6 +109,7 @@ const EventDetailedHeader = (props) => {
 };
 
 EventDetailedHeader.defaultProps = {
+  isAuthenticated: false,
   isGoing: false,
   isHost: false,
   event: {},
@@ -105,10 +118,12 @@ EventDetailedHeader.defaultProps = {
 EventDetailedHeader.propTypes = {
   cancelGoingToEvent: PropTypes.func.isRequired,
   goingToEvent: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
   isGoing: PropTypes.bool,
   isHost: PropTypes.bool,
   event: PropTypes.shape(),
   loading: PropTypes.bool.isRequired,
+  openModal: PropTypes.func.isRequired,
 };
 
 export default EventDetailedHeader;

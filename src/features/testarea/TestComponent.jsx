@@ -5,7 +5,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
-import { incrementAsync, decrementAsync } from './testActions';
+import { incrementAsync, decrementAsync, testPermission } from './testActions';
 import { Button } from '../../frameworks/semantic-ui-react/scripts';
 import { openModal } from '../modals/modalActions';
 
@@ -18,6 +18,7 @@ const actions = {
   decrementAsync,
   incrementAsync,
   openModal,
+  testPermission,
 };
 
 class TestComponent extends Component {
@@ -71,6 +72,7 @@ class TestComponent extends Component {
       incrementAsync,
       loading,
       openModal,
+      testPermission,
     } = this.props;
     const inputProps = {
       value: this.state.address,
@@ -103,6 +105,11 @@ class TestComponent extends Component {
           onClick={() => openModal('TestModal', { data: 43 })}
           color="teal"
           content="Open Modal"
+        />
+        <Button
+          onClick={testPermission}
+          color="red"
+          content="Test Permission"
         />
         <br />
         <br />
