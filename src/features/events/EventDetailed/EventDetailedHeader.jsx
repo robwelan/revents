@@ -7,6 +7,7 @@ import {
   Header,
   Image,
   Item,
+  Label,
   Segment,
 } from '../../../frameworks/semantic-ui-react/scripts';
 
@@ -72,12 +73,12 @@ const EventDetailedHeader = (props) => {
       <Segment attached="bottom">
         {!isHost && (
           <React.Fragment>
-            {isGoing && (
+            {isGoing && !event.cancelled && (
               <Button onClick={() => cancelGoingToEvent(event)}>
                 {'Cancel My Place'}
               </Button>
             )}
-            {!isGoing && isAuthenticated && (
+            {!isGoing && isAuthenticated && !event.cancelled && (
               <Button
                 color="teal"
                 loading={loading}
@@ -86,7 +87,7 @@ const EventDetailedHeader = (props) => {
                 {'JOIN THIS EVENT'}
               </Button>
             )}
-            {!isAuthenticated && (
+            {!isAuthenticated && !event.cancelled && (
               <Button
                 color="teal"
                 loading={loading}
@@ -94,6 +95,13 @@ const EventDetailedHeader = (props) => {
               >
                 {'JOIN THIS EVENT'}
               </Button>
+            )}
+            {event.cancelled && !isHost && (
+              <Label
+                color="red"
+                content="This Event Has Been Cancelled."
+                size="large"
+              />
             )}
           </React.Fragment>
         )}

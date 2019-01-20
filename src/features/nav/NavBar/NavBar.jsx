@@ -60,7 +60,6 @@ class NavBar extends Component {
             {'Re-vents'}
           </Menu.Item>
           <Menu.Item as={NavLink} name="Events" to="/events" />
-          <Menu.Item as={NavLink} name="Test" to="/test" />
           {authenticated && (
             <React.Fragment>
               <Menu.Item as={NavLink} name="People" to="/people" />

@@ -9,7 +9,6 @@ import {
 
 const EventDetailedSidebar = (props) => {
   const { attendees } = props;
-  const isHost = false;
 
   return (
     <div>
@@ -24,45 +23,32 @@ const EventDetailedSidebar = (props) => {
         {attendees && attendees.length}
         {' '}
         {attendees && attendees.length === 1 ? 'Person' : 'People'}
-        {' '}
-        Going
+        {' Going'}
       </Segment>
       <Segment attached>
         <Item.Group divided>
-          {
-            attendees
+          {attendees
             && attendees.map(attendee => (
-              <Item
-                key={attendee.id}
-                style={{ position: 'relative' }}
-              >
-                {isHost
-                  && (
-                    <Label
-                      style={{ position: 'absolute' }}
-                      color="orange"
-                      ribbon="right"
-                    >
-                      Host
-                    </Label>
-                  )
-                }
-                <Item.Image
-                  size="tiny"
-                  src={attendee.photoURL}
-                />
+              <Item key={attendee.id} style={{ position: 'relative' }}>
+                {attendee.host && (
+                  <Label
+                    style={{ position: 'absolute' }}
+                    color="orange"
+                    ribbon="right"
+                  >
+                    {'Host'}
+                  </Label>
+                )}
+                <Item.Image size="tiny" src={attendee.photoURL} />
                 <Item.Content verticalAlign="middle">
                   <Item.Header as="h3">
-                    <Link
-                      to={`/profile/${attendee.id}`}
-                    >
+                    <Link to={`/profile/${attendee.id}`}>
                       {attendee.displayName}
                     </Link>
                   </Item.Header>
                 </Item.Content>
               </Item>
-            ))
-          }
+            ))}
         </Item.Group>
       </Segment>
     </div>
@@ -74,9 +60,7 @@ EventDetailedSidebar.defaultProps = {
 };
 
 EventDetailedSidebar.propTypes = {
-  attendees: PropTypes.arrayOf(
-    PropTypes.shape(),
-  ),
+  attendees: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 export default EventDetailedSidebar;

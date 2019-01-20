@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { firestoreConnect, isEmpty } from 'react-redux-firebase';
+import { toastr } from 'react-redux-toastr';
 import {
   Grid,
   Segment,
@@ -56,6 +57,16 @@ class UserDetailedPage extends Component {
     this.changeTab = this.changeTab.bind(this);
   }
 
+  async componentDidMount() {
+    const { firestore, history, match } = this.props;
+    const user = await firestore.get(`users/${match.params.id}`);
+
+    if (!user.exists) {
+      toastr.error('Not Found', 'This user id could not be found.');
+      history.push('/error');
+    }
+  }
+
   changeTab(e, data) {
     const { activeIndex } = data;
     const {
@@ -81,7 +92,7 @@ class UserDetailedPage extends Component {
     } = this.props;
     const isCurrentUser = auth.uid === match.params.id;
     const isFollowing = !isEmpty(following);
-    const loading = Object.values(requesting).some(a => a === true);
+    const loading = requesting[`users/${match.params.id}`];
 
     if (loading) return <LoadingComponent inverted />;
 
